@@ -223,14 +223,37 @@
 
 
         sub onXtreamSetupSelected()
-            m.setupStatus.text = "Xtream Codes selected."
+            m.top.findNode("nicknameButton").text = "Server URL"
+            m.top.findNode("hostButton").text = "Username"
+            m.top.findNode("usernameButton").text = "Password"
+
+            m.top.findNode("nicknameButton").visible = true
+            m.top.findNode("hostButton").visible = true
+            m.top.findNode("usernameButton").visible = true
+            m.top.findNode("passwordButton").visible = false
+
+            m.setupStatus.text = "Enter Xtream Codes details."
+            m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         sub onM3USetupSelected()
-            m.setupStatus.text = "M3U Playlist selected."
+            m.top.findNode("nicknameButton").text = "M3U Playlist URL"
+            m.top.findNode("hostButton").text = "EPG URL (optional)"
+
+            m.top.findNode("nicknameButton").visible = true
+            m.top.findNode("hostButton").visible = true
+            m.top.findNode("usernameButton").visible = false
+            m.top.findNode("passwordButton").visible = false
+
+            m.setupStatus.text = "Enter M3U playlist details."
+            m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         sub onCloseSetup()
+            m.top.findNode("nicknameButton").visible = false
+            m.top.findNode("hostButton").visible = false
+            m.top.findNode("usernameButton").visible = false
+            m.top.findNode("passwordButton").visible = false
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
