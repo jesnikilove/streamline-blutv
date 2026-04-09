@@ -21,7 +21,7 @@
 
         <Label
             id="infoTitle"
-            text="StreamLine BluTV"
+            text="StreamLine BluTV Setup"
             translation="[40,306]"
             width="700"
             height="24"
@@ -149,75 +149,54 @@
                     translation="[180,100]"
                     color="0x162a4fFF" />
                 <Label
-                    text="StreamLine BluTV"
+                    text="StreamLine BluTV Setup"
                     translation="[220,135]"
                     width="400"
                     height="30"
                     color="0xEEF4FFFF"
                     font="font:LargeBoldSystemFont" />
-                <Label
-                    text="Provider Setup"
-                    translation="[220,172]"
-                    width="400"
-                    height="24"
-                    color="0xB8C7E6FF"
-                    font="font:MediumSystemFont" />
+                <Label text="" translation="[220,172]" width="400" height="24" color="0xB8C7E6FF" font="font:MediumSystemFont" visible="false" />
                 <Label
                     text="Nickname"
                     translation="[230,235]"
                     width="220"
                     height="22"
-                    color="0xEEF4FFFF" />
+                    color="0xEEF4FFFF"  visible="false" visible="false"/>
                 <Button
                     id="nicknameButton"
                     translation="[230,262]"
                     width="360"
                     height="44"
-                    text="Nickname: My Provider" />
+                    text="Nickname"  visible="false" visible="false"/>
                 <Label
                     text="Setup Type"
                     translation="[230,325]"
                     width="220"
                     height="22"
                     color="0xEEF4FFFF" />
-                <Button
-                    id="setupTypeButton"
-                    translation="[230,352]"
-                    width="360"
-                    height="44"
-                    text="Xtream Codes" />
+                <Button id="setupTypeButton" translation="[230,250]" width="300" height="50" text="Type: Xtream Codes" />
                 <Label
                     text="Server / Playlist"
                     translation="[620,235]"
                     width="220"
                     height="22"
                     color="0xEEF4FFFF" />
-                <Button
-                    id="sourceButton"
-                    translation="[620,262]"
-                    width="360"
-                    height="44"
-                    text="Add Provider Info" />
+                <Button id="sourceButton" translation="[560,250]" width="300" height="50" text="Type: M3U Playlist" />
                 <Button
                     id="continueButton"
                     translation="[230,470]"
                     width="220"
                     height="46"
-                    text="Continue" />
-                <Button
-                    id="closeSetupButton"
-                    translation="[470,470]"
-                    width="220"
-                    height="46"
-                    text="Close Setup" />
+                    text="Continue"  visible="false" visible="false"/>
+                <Button id="closeSetupButton" translation="[395,335]" width="300" height="50" text="Close Setup" />
                 <Label
                     id="setupStatus"
-                    text="Setup shell ready."
+                    text="Choose your setup type."
                     translation="[230,535]"
                     width="620"
                     height="22"
                     color="0xEEF4FFFF"
-                    font="font:SmallSystemFont" />
+                    font="font:SmallSystemFont"  visible="false" visible="false"/>
             </children>
         </Group>
     </children>
@@ -252,7 +231,7 @@
             else
                 btn.text = "Xtream Codes"
             end if
-            m.setupStatus.text = "Provider setup type changed."
+            m.setupStatus.text = "Setup type changed."
         end sub
 
         sub onContinueFromSetup()
