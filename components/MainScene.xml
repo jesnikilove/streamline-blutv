@@ -235,6 +235,46 @@
             m.categoryList.setFocus(true)
         end sub
 
+
+        function onKeyEvent(key as String, press as Boolean) as Boolean
+            if not press then return false
+            if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
+
+            focusedXtream = m.top.findNode("setupTypeButton").hasFocus()
+            focusedM3U = m.top.findNode("sourceButton").hasFocus()
+            focusedClose = m.top.findNode("closeSetupButton").hasFocus()
+
+            if key = "right" then
+                if focusedXtream then
+                    m.top.findNode("sourceButton").setFocus(true)
+                    return true
+                end if
+            end if
+
+            if key = "left" then
+                if focusedM3U then
+                    m.top.findNode("setupTypeButton").setFocus(true)
+                    return true
+                end if
+            end if
+
+            if key = "down" then
+                if focusedXtream or focusedM3U then
+                    m.top.findNode("closeSetupButton").setFocus(true)
+                    return true
+                end if
+            end if
+
+            if key = "up" then
+                if focusedClose then
+                    m.top.findNode("setupTypeButton").setFocus(true)
+                    return true
+                end if
+            end if
+
+            return false
+        end function
+
         sub buildCategories()
             content = CreateObject("roSGNode", "ContentNode")
 
