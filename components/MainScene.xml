@@ -137,68 +137,66 @@
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- SAFE SETUP OVERLAY -->
+        
         <Group id="setupOverlay" visible="true">
             <children>
+                <Rectangle width="1280" height="720" color="0x071b4aEE" />
+
                 <Rectangle
-                    width="1280"
-                    height="720"
-                    color="0x0f1f3dDD" />
-                <Rectangle
-                    width="920"
-                    height="520"
-                    translation="[180,100]"
+                    width="900"
+                    height="420"
+                    translation="[190,120]"
                     color="0x162a4fFF" />
+
                 <Label
                     text="StreamLine BluTV Setup"
-                    translation="[220,135]"
-                    width="400"
-                    height="30"
+                    translation="[290,160]"
+                    width="700"
+                    height="40"
+                    horizAlign="center"
                     color="0xEEF4FFFF"
                     font="font:LargeBoldSystemFont" />
-                <Label text="" translation="[220,172]" width="400" height="24" color="0xB8C7E6FF" font="font:MediumSystemFont" visible="false" />
-                <Label
-                    text="Nickname"
-                    translation="[230,235]"
-                    width="220"
-                    height="22"
-                    color="0xEEF4FFFF"  visible="false" visible="false"/>
-                <Button
-                    id="nicknameButton"
-                    translation="[230,262]"
-                    width="360"
-                    height="44"
-                    text="Nickname"  visible="false" visible="false"/>
-                <Label
-                    text="Setup Type"
-                    translation="[230,325]"
-                    width="220"
-                    height="22"
-                    color="0xEEF4FFFF" />
-                <Button id="setupTypeButton" translation="[230,250]" width="300" height="50" text="Type: Xtream Codes" />
-                <Label
-                    text="Server / Playlist"
-                    translation="[620,235]"
-                    width="220"
-                    height="22"
-                    color="0xEEF4FFFF" />
-                <Button id="sourceButton" translation="[560,250]" width="300" height="50" text="Type: M3U Playlist" />
-                <Button
-                    id="continueButton"
-                    translation="[230,470]"
-                    width="220"
-                    height="46"
-                    text="Continue"  visible="false" visible="false"/>
-                <Button id="closeSetupButton" translation="[395,335]" width="300" height="50" text="Close Setup" />
+
                 <Label
                     id="setupStatus"
-                    text="Choose your setup type."
-                    translation="[230,535]"
-                    width="620"
-                    height="22"
-                    color="0xEEF4FFFF"
-                    font="font:SmallSystemFont"  visible="false" visible="false"/>
+                    text="Choose your setup type"
+                    translation="[340,215]"
+                    width="600"
+                    height="24"
+                    horizAlign="center"
+                    color="0xB8C7E6FF"
+                    font="font:MediumSystemFont" />
+
+                <Button
+                    id="setupTypeButton"
+                    translation="[260,300]"
+                    width="320"
+                    height="64"
+                    text="Xtream Codes" />
+
+                <Button
+                    id="sourceButton"
+                    translation="[700,300]"
+                    width="320"
+                    height="64"
+                    text="M3U Playlist" />
+
+                <Button
+                    id="closeSetupButton"
+                    translation="[480,410]"
+                    width="320"
+                    height="56"
+                    text="Close Setup" />
+
+                <!-- Hidden for later patches -->
+                <Button id="nicknameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="hostButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="usernameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="passwordButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="continueButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
             </children>
         </Group>
+
     </children>
 
     <script type="text/brightscript"><![CDATA[
@@ -211,32 +209,25 @@
 
             m.setupOverlay = m.top.findNode("setupOverlay")
             m.setupStatus = m.top.findNode("setupStatus")
-
-            m.top.findNode("setupTypeButton").observeField("buttonSelected", "onSetupTypeToggle")
-            m.top.findNode("continueButton").observeField("buttonSelected", "onContinueFromSetup")
-            m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
-
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
 
-            m.top.findNode("nicknameButton").setFocus(true)
+            m.top.findNode("setupTypeButton").observeField("buttonSelected", "onXtreamSetupSelected")
+            m.top.findNode("sourceButton").observeField("buttonSelected", "onM3USetupSelected")
+            m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
+
+            m.top.findNode("setupTypeButton").setFocus(true)
             updateChannelsAndGuide("Movies")
         end sub
 
-        sub onSetupTypeToggle()
-            btn = m.top.findNode("setupTypeButton")
-            if btn.text = "Xtream Codes"
-                btn.text = "M3U Playlist"
-            else
-                btn.text = "Xtream Codes"
-            end if
-            m.setupStatus.text = "Setup type changed."
+
+        sub onXtreamSetupSelected()
+            m.setupStatus.text = "Xtream Codes selected."
         end sub
 
-        sub onContinueFromSetup()
-            m.setupOverlay.visible = false
-            m.categoryList.setFocus(true)
+        sub onM3USetupSelected()
+            m.setupStatus.text = "M3U Playlist selected."
         end sub
 
         sub onCloseSetup()
