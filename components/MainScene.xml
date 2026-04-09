@@ -144,7 +144,7 @@
 
                 <Rectangle
                     width="900"
-                    height="420"
+                    height="560"
                     translation="[190,120]"
                     color="0x162a4fFF" />
 
@@ -183,7 +183,7 @@
 
                 <Button
                     id="closeSetupButton"
-                    translation="[480,410]"
+                    translation="[480,625]"
                     width="320"
                     height="56"
                     text="Close Setup" />
@@ -192,12 +192,12 @@
                 <!-- Visible field boxes -->
                 <Rectangle id="field1Rect" translation="[390,380]" width="500" height="58" color="0x223b73FF" visible="false" />
                 <Rectangle id="field2Rect" translation="[390,455]" width="500" height="58" color="0x223b73FF" visible="false" />
-                <Rectangle id="field3Rect" translation="[390,530]" width="500" height="58" color="0x223b73FF" visible="false" />
+                <Rectangle id="field3Rect" translation="[390,520]" width="500" height="58" color="0x223b73FF" visible="false" />
 
 <!-- Hidden for later patches -->
                 <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
                 <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
-                <Button id="usernameButton" translation="[390,530]" width="500" height="58" text="" visible="false" />
+                <Button id="usernameButton" translation="[390,520]" width="500" height="58" text="" visible="false" />
                 <Button id="passwordButton" translation="[390,605]" width="500" height="58" text="" visible="false" />
                 <Button id="continueButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
             </children>
@@ -229,6 +229,8 @@
 
 
         sub onXtreamSetupSelected()
+            hideSetupFields()
+
             m.top.findNode("nicknameButton").text = "Server URL"
             m.top.findNode("hostButton").text = "Username"
             m.top.findNode("usernameButton").text = "Password"
@@ -240,40 +242,29 @@
             m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
             m.top.findNode("usernameButton").visible = true
-            m.top.findNode("passwordButton").visible = false
 
             m.setupStatus.text = "Enter Xtream Codes details."
             m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         sub onM3USetupSelected()
+            hideSetupFields()
+
             m.top.findNode("nicknameButton").text = "M3U Playlist URL"
             m.top.findNode("hostButton").text = "EPG URL (optional)"
-            m.top.findNode("usernameButton").text = ""
 
             m.top.findNode("field1Rect").visible = true
             m.top.findNode("field2Rect").visible = true
-            m.top.findNode("field3Rect").visible = false
 
             m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
-            m.top.findNode("usernameButton").visible = false
-            m.top.findNode("passwordButton").visible = false
 
             m.setupStatus.text = "Enter M3U playlist details."
             m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         sub onCloseSetup()
-            m.top.findNode("field1Rect").visible = false
-            m.top.findNode("field2Rect").visible = false
-            m.top.findNode("field3Rect").visible = false
-
-            m.top.findNode("nicknameButton").visible = false
-            m.top.findNode("hostButton").visible = false
-            m.top.findNode("usernameButton").visible = false
-            m.top.findNode("passwordButton").visible = false
-
+            hideSetupFields()
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
@@ -283,39 +274,109 @@
             if not press then return false
             if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
 
-            focusedXtream = m.top.findNode("setupTypeButton").hasFocus()
-            focusedM3U = m.top.findNode("sourceButton").hasFocus()
-            focusedClose = m.top.findNode("closeSetupButton").hasFocus()
+            xt = m.top.findNode("setupTypeButton")
+            m3u = m.top.findNode("sourceButton")
+            closeBtn = m.top.findNode("closeSetupButton")
+            f1 = m.top.findNode("nicknameButton")
+            f2 = m.top.findNode("hostButton")
+            f3 = m.top.findNode("usernameButton")
+
+            if key = "back" then
+                if setupFieldsVisible() then
+                    hideSetupFields()
+                    m.setupStatus.text = "Choose your setup type"
+                    xt.setFocus(true)
+                else
+                    onCloseSetup()
+                end if
+                return true
+            end if
 
             if key = "right" then
-                if focusedXtream then
-                    m.top.findNode("sourceButton").setFocus(true)
+                if xt.hasFocus() then
+                    m3u.setFocus(true)
                     return true
                 end if
             end if
 
             if key = "left" then
-                if focusedM3U then
-                    m.top.findNode("setupTypeButton").setFocus(true)
+                if m3u.hasFocus() then
+                    xt.setFocus(true)
                     return true
                 end if
             end if
 
             if key = "down" then
-                if focusedXtream or focusedM3U then
-                    m.top.findNode("closeSetupButton").setFocus(true)
+                if xt.hasFocus() or m3u.hasFocus() then
+                    if setupFieldsVisible() then
+                        f1.setFocus(true)
+                    else
+                        closeBtn.setFocus(true)
+                    end if
+                    return true
+                end if
+                if f1.hasFocus() then
+                    if f2.visible then f2.setFocus(true)
+                    return true
+                end if
+                if f2.hasFocus() then
+                    if f3.visible then
+                        f3.setFocus(true)
+                    else
+                        closeBtn.setFocus(true)
+                    end if
+                    return true
+                end if
+                if f3.hasFocus() then
+                    closeBtn.setFocus(true)
                     return true
                 end if
             end if
 
             if key = "up" then
-                if focusedClose then
-                    m.top.findNode("setupTypeButton").setFocus(true)
+                if closeBtn.hasFocus() then
+                    if f3.visible then
+                        f3.setFocus(true)
+                    else if f2.visible then
+                        f2.setFocus(true)
+                    else if f1.visible then
+                        f1.setFocus(true)
+                    else
+                        xt.setFocus(true)
+                    end if
+                    return true
+                end if
+                if f3.hasFocus() then
+                    f2.setFocus(true)
+                    return true
+                end if
+                if f2.hasFocus() then
+                    f1.setFocus(true)
+                    return true
+                end if
+                if f1.hasFocus() then
+                    xt.setFocus(true)
                     return true
                 end if
             end if
 
             return false
+        end function
+
+
+        sub hideSetupFields()
+            m.top.findNode("field1Rect").visible = false
+            m.top.findNode("field2Rect").visible = false
+            m.top.findNode("field3Rect").visible = false
+
+            m.top.findNode("nicknameButton").visible = false
+            m.top.findNode("hostButton").visible = false
+            m.top.findNode("usernameButton").visible = false
+            m.top.findNode("passwordButton").visible = false
+        end sub
+
+        function setupFieldsVisible() as Boolean
+            return m.top.findNode("nicknameButton").visible or m.top.findNode("hostButton").visible or m.top.findNode("usernameButton").visible
         end function
 
         sub buildCategories()
