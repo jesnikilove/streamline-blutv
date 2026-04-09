@@ -188,7 +188,13 @@
                     height="56"
                     text="Close Setup" />
 
-                <!-- Hidden for later patches -->
+                
+                <!-- Visible field boxes -->
+                <Rectangle id="field1Rect" translation="[390,380]" width="500" height="58" color="0x223b73FF" visible="false" />
+                <Rectangle id="field2Rect" translation="[390,455]" width="500" height="58" color="0x223b73FF" visible="false" />
+                <Rectangle id="field3Rect" translation="[390,530]" width="500" height="58" color="0x223b73FF" visible="false" />
+
+<!-- Hidden for later patches -->
                 <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
                 <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
                 <Button id="usernameButton" translation="[390,530]" width="500" height="58" text="" visible="false" />
@@ -227,6 +233,10 @@
             m.top.findNode("hostButton").text = "Username"
             m.top.findNode("usernameButton").text = "Password"
 
+            m.top.findNode("field1Rect").visible = true
+            m.top.findNode("field2Rect").visible = true
+            m.top.findNode("field3Rect").visible = true
+
             m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
             m.top.findNode("usernameButton").visible = true
@@ -239,6 +249,11 @@
         sub onM3USetupSelected()
             m.top.findNode("nicknameButton").text = "M3U Playlist URL"
             m.top.findNode("hostButton").text = "EPG URL (optional)"
+            m.top.findNode("usernameButton").text = ""
+
+            m.top.findNode("field1Rect").visible = true
+            m.top.findNode("field2Rect").visible = true
+            m.top.findNode("field3Rect").visible = false
 
             m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
@@ -250,10 +265,15 @@
         end sub
 
         sub onCloseSetup()
+            m.top.findNode("field1Rect").visible = false
+            m.top.findNode("field2Rect").visible = false
+            m.top.findNode("field3Rect").visible = false
+
             m.top.findNode("nicknameButton").visible = false
             m.top.findNode("hostButton").visible = false
             m.top.findNode("usernameButton").visible = false
             m.top.findNode("passwordButton").visible = false
+
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
