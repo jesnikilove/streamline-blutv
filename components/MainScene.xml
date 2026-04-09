@@ -189,10 +189,10 @@
                     text="Close Setup" />
 
                 <!-- Hidden for later patches -->
-                <Button id="nicknameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="hostButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="usernameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="passwordButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
+                <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
+                <Button id="usernameButton" translation="[390,530]" width="500" height="58" text="" visible="false" />
+                <Button id="passwordButton" translation="[390,605]" width="500" height="58" text="" visible="false" />
                 <Button id="continueButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
             </children>
         </Group>
