@@ -115,30 +115,111 @@
         <!-- Program blocks row 1 -->
         <Rectangle id="p11" translation="[590,433]" width="210" height="36" color="0x7b5d88FF" />
         <Label id="p11t" text="A Hard Day's Night" translation="[602,442]" width="186" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-
         <Rectangle id="p12" translation="[808,433]" width="140" height="36" color="0x7b5d88FF" />
         <Label id="p12t" text="Margaret" translation="[820,442]" width="116" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 2 -->
         <Rectangle id="p21" translation="[590,487]" width="120" height="36" color="0x7b5d88FF" />
         <Label id="p21t" text="The 33" translation="[602,496]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-
         <Rectangle id="p22" translation="[718,487]" width="240" height="36" color="0x7b5d88FF" />
         <Label id="p22t" text="Movie Feature" translation="[730,496]" width="216" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 3 -->
         <Rectangle id="p31" translation="[590,541]" width="180" height="36" color="0x7b5d88FF" />
         <Label id="p31t" text="Classic Film" translation="[602,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-
         <Rectangle id="p32" translation="[778,541]" width="180" height="36" color="0x7b5d88FF" />
         <Label id="p32t" text="Drama Hour" translation="[790,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 4 -->
         <Rectangle id="p41" translation="[590,595]" width="120" height="36" color="0x7b5d88FF" />
         <Label id="p41t" text="Indie" translation="[602,604]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-
         <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- SAFE SETUP OVERLAY -->
+        <Group id="setupOverlay" visible="true">
+            <children>
+                <Rectangle
+                    width="1280"
+                    height="720"
+                    color="0x0f1f3dDD" />
+                <Rectangle
+                    width="920"
+                    height="520"
+                    translation="[180,100]"
+                    color="0x162a4fFF" />
+                <Label
+                    text="StreamLine BluTV"
+                    translation="[220,135]"
+                    width="400"
+                    height="30"
+                    color="0xEEF4FFFF"
+                    font="font:LargeBoldSystemFont" />
+                <Label
+                    text="Provider Setup"
+                    translation="[220,172]"
+                    width="400"
+                    height="24"
+                    color="0xB8C7E6FF"
+                    font="font:MediumSystemFont" />
+                <Label
+                    text="Nickname"
+                    translation="[230,235]"
+                    width="220"
+                    height="22"
+                    color="0xEEF4FFFF" />
+                <Button
+                    id="nicknameButton"
+                    translation="[230,262]"
+                    width="360"
+                    height="44"
+                    text="Nickname: My Provider" />
+                <Label
+                    text="Setup Type"
+                    translation="[230,325]"
+                    width="220"
+                    height="22"
+                    color="0xEEF4FFFF" />
+                <Button
+                    id="setupTypeButton"
+                    translation="[230,352]"
+                    width="360"
+                    height="44"
+                    text="Xtream Codes" />
+                <Label
+                    text="Server / Playlist"
+                    translation="[620,235]"
+                    width="220"
+                    height="22"
+                    color="0xEEF4FFFF" />
+                <Button
+                    id="sourceButton"
+                    translation="[620,262]"
+                    width="360"
+                    height="44"
+                    text="Add Provider Info" />
+                <Button
+                    id="continueButton"
+                    translation="[230,470]"
+                    width="220"
+                    height="46"
+                    text="Continue" />
+                <Button
+                    id="closeSetupButton"
+                    translation="[470,470]"
+                    width="220"
+                    height="46"
+                    text="Close Setup" />
+                <Label
+                    id="setupStatus"
+                    text="Setup shell ready."
+                    translation="[230,535]"
+                    width="620"
+                    height="22"
+                    color="0xEEF4FFFF"
+                    font="font:SmallSystemFont" />
+            </children>
+        </Group>
     </children>
 
     <script type="text/brightscript"><![CDATA[
@@ -149,12 +230,39 @@
             m.infoTitle = m.top.findNode("infoTitle")
             m.infoMeta = m.top.findNode("infoMeta")
 
+            m.setupOverlay = m.top.findNode("setupOverlay")
+            m.setupStatus = m.top.findNode("setupStatus")
+
+            m.top.findNode("setupTypeButton").observeField("buttonSelected", "onSetupTypeToggle")
+            m.top.findNode("continueButton").observeField("buttonSelected", "onContinueFromSetup")
+            m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
+
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
 
-            m.categoryList.setFocus(true)
+            m.top.findNode("nicknameButton").setFocus(true)
             updateChannelsAndGuide("Movies")
+        end sub
+
+        sub onSetupTypeToggle()
+            btn = m.top.findNode("setupTypeButton")
+            if btn.text = "Xtream Codes"
+                btn.text = "M3U Playlist"
+            else
+                btn.text = "Xtream Codes"
+            end if
+            m.setupStatus.text = "Provider setup type changed."
+        end sub
+
+        sub onContinueFromSetup()
+            m.setupOverlay.visible = false
+            m.categoryList.setFocus(true)
+        end sub
+
+        sub onCloseSetup()
+            m.setupOverlay.visible = false
+            m.categoryList.setFocus(true)
         end sub
 
         sub buildCategories()
