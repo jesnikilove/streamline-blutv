@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="MainScene" extends="Scene">
+
+    <children>
+        <!-- Background -->
+        <Rectangle width="1280" height="720" color="0x0f1f3dFF" />
+
+        <!-- Video -->
+        <Video
+            id="videoPlayer"
+            width="1280"
+            height="280"
+            translation="[0,0]" />
+
+        <!-- Info panel -->
+        <Rectangle
+            width="1240"
+            height="70"
+            translation="[20,290]"
+            color="0x162a4fFF" />
+
+        <Label
+            id="infoTitle"
+            text="StreamLine BluTV"
+            translation="[40,306]"
+            width="700"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+
+        <Label
+            id="infoMeta"
+            text="Live TV Guide"
+            translation="[40,332]"
+            width="700"
+            height="20"
+            color="0xB8C7E6FF"
+            font="font:SmallSystemFont" />
+
+        <!-- Left category panel -->
+        <Rectangle
+            width="170"
+            height="340"
+            translation="[20,375]"
+            color="0x162a4fFF" />
+
+        <Label
+            text="Categories"
+            translation="[35,388]"
+            width="130"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+
+        <LabelList
+            id="categoryList"
+            translation="[20,425]"
+            itemSize="[170,52]"
+            itemFocusedColor="0x3a86ffFF"
+            itemUnfocusedColor="0x223b73FF" />
+
+        <!-- Channel panel -->
+        <Rectangle
+            width="220"
+            height="340"
+            translation="[200,375]"
+            color="0x162a4fFF" />
+
+        <Label
+            text="Channels"
+            translation="[215,388]"
+            width="160"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+
+        <LabelList
+            id="channelList"
+            translation="[200,425]"
+            itemSize="[220,52]"
+            itemFocusedColor="0x4f7fe6FF"
+            itemUnfocusedColor="0x223b73FF" />
+
+        <!-- Guide panel -->
+        <Rectangle
+            width="840"
+            height="340"
+            translation="[430,375]"
+            color="0x162a4fFF" />
+
+        <!-- Time header -->
+        <Rectangle translation="[430,375]" width="840" height="50" color="0x1a2f57FF" />
+
+        <Label text="12:00 PM" translation="[450,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="12:30 PM" translation="[570,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="1:00 PM"  translation="[690,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="1:30 PM"  translation="[810,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="2:00 PM"  translation="[930,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="2:30 PM"  translation="[1050,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="3:00 PM"  translation="[1170,390]" width="80" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+
+        <!-- Soft row lines -->
+        <Rectangle translation="[430,425]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,479]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,533]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,587]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,641]" width="840" height="2" color="0x223b73AA" />
+
+        <!-- Row labels inside guide -->
+        <Label id="rowLabel1" text="Movies 1" translation="[446,438]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel2" text="Movies 2" translation="[446,492]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel3" text="Movies 3" translation="[446,546]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel4" text="Movies 4" translation="[446,600]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 1 -->
+        <Rectangle id="p11" translation="[590,433]" width="210" height="36" color="0x7b5d88FF" />
+        <Label id="p11t" text="A Hard Day's Night" translation="[602,442]" width="186" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <Rectangle id="p12" translation="[808,433]" width="140" height="36" color="0x7b5d88FF" />
+        <Label id="p12t" text="Margaret" translation="[820,442]" width="116" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 2 -->
+        <Rectangle id="p21" translation="[590,487]" width="120" height="36" color="0x7b5d88FF" />
+        <Label id="p21t" text="The 33" translation="[602,496]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <Rectangle id="p22" translation="[718,487]" width="240" height="36" color="0x7b5d88FF" />
+        <Label id="p22t" text="Movie Feature" translation="[730,496]" width="216" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 3 -->
+        <Rectangle id="p31" translation="[590,541]" width="180" height="36" color="0x7b5d88FF" />
+        <Label id="p31t" text="Classic Film" translation="[602,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <Rectangle id="p32" translation="[778,541]" width="180" height="36" color="0x7b5d88FF" />
+        <Label id="p32t" text="Drama Hour" translation="[790,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 4 -->
+        <Rectangle id="p41" translation="[590,595]" width="120" height="36" color="0x7b5d88FF" />
+        <Label id="p41t" text="Indie" translation="[602,604]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
+        <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+    </children>
+
+    <script type="text/brightscript"><![CDATA[
+        sub init()
+            m.video = m.top.findNode("videoPlayer")
+            m.categoryList = m.top.findNode("categoryList")
+            m.channelList = m.top.findNode("channelList")
+            m.infoTitle = m.top.findNode("infoTitle")
+            m.infoMeta = m.top.findNode("infoMeta")
+
+            buildCategories()
+            m.categoryList.observeField("itemFocused", "onCategoryFocus")
+            m.channelList.observeField("itemFocused", "onChannelFocus")
+
+            m.categoryList.setFocus(true)
+            updateChannelsAndGuide("Movies")
+        end sub
+
+        sub buildCategories()
+            content = CreateObject("roSGNode", "ContentNode")
+
+            addListItem(content, "Movies")
+            addListItem(content, "Sports")
+            addListItem(content, "News")
+            addListItem(content, "Family")
+
+            m.categoryList.content = content
+        end sub
+
+        sub addListItem(parent as Object, title as String)
+            item = parent.CreateChild("ContentNode")
+            item.title = title
+        end sub
+
+        sub onCategoryFocus()
+            item = m.categoryList.content.getChild(m.categoryList.itemFocused)
+            if item <> invalid
+                updateChannelsAndGuide(item.title)
+            end if
+        end sub
+
+        sub onChannelFocus()
+            item = m.channelList.content.getChild(m.channelList.itemFocused)
+            if item <> invalid
+                playChannel(item)
+            end if
+        end sub
+
+        sub updateChannelsAndGuide(category as String)
+            buildChannels(category)
+            buildGuide(category)
+
+            firstChannel = m.channelList.content.getChild(0)
+            if firstChannel <> invalid
+                playChannel(firstChannel)
+            end if
+        end sub
+
+        sub buildChannels(category as String)
+            content = CreateObject("roSGNode", "ContentNode")
+
+            if category = "Movies"
+                addChannel(content, "101  5 STARMAX")
+                addChannel(content, "102  ACTIONMAX")
+                addChannel(content, "103  MOVIES HD")
+                addChannel(content, "104  CINEMA PLUS")
+            else if category = "Sports"
+                addChannel(content, "201  ESPN")
+                addChannel(content, "202  beIN SPORTS")
+                addChannel(content, "203  SPORTS NET")
+                addChannel(content, "204  FOX SPORTS")
+            else if category = "News"
+                addChannel(content, "301  CNN")
+                addChannel(content, "302  FOX NEWS")
+                addChannel(content, "303  MSNBC")
+                addChannel(content, "304  NEWSMAX")
+            else
+                addChannel(content, "401  HALLMARK")
+                addChannel(content, "402  LIFETIME")
+                addChannel(content, "403  TLC")
+                addChannel(content, "404  FAMILY TV")
+            end if
+
+            m.channelList.content = content
+        end sub
+
+        sub addChannel(parent as Object, title as String)
+            item = parent.CreateChild("ContentNode")
+            item.title = title
+            item.addField("url", "string", true)
+            item.url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+        end sub
+
+        sub buildGuide(category as String)
+            color = "0x7b5d88FF"
+            if category = "Sports"
+                color = "0x356b8cFF"
+            else if category = "News"
+                color = "0x2e4f8fFF"
+            else if category = "Family"
+                color = "0x4f7a5aFF"
+            end if
+
+            m.top.findNode("p11").color = color
+            m.top.findNode("p12").color = color
+            m.top.findNode("p21").color = color
+            m.top.findNode("p22").color = color
+            m.top.findNode("p31").color = color
+            m.top.findNode("p32").color = color
+            m.top.findNode("p41").color = color
+            m.top.findNode("p42").color = color
+
+            if category = "Movies"
+                setRowLabels("5 STARMAX", "ACTIONMAX", "MOVIES HD", "CINEMA PLUS")
+                setProgramTexts("A Hard Day's Night", "Margaret", "The 33", "Movie Feature", "Classic Film", "Drama Hour", "Indie", "Saturday Feature")
+            else if category = "Sports"
+                setRowLabels("ESPN", "beIN SPORTS", "SPORTS NET", "FOX SPORTS")
+                setProgramTexts("SportsCenter", "Live Match", "Tennis", "Postgame", "Golf Hour", "Live Soccer", "Boxing", "Highlights")
+            else if category = "News"
+                setRowLabels("CNN", "FOX NEWS", "MSNBC", "NEWSMAX")
+                setProgramTexts("Noon News", "Update", "Politics", "News Block", "World Report", "Panel", "Markets", "Evening Lead")
+            else
+                setRowLabels("HALLMARK", "LIFETIME", "TLC", "FAMILY TV")
+                setProgramTexts("Family Hour", "Movie", "Reality", "Lifestyle", "Cartoon Time", "Home Show", "Cooking", "Weekend Special")
+            end if
+        end sub
+
+        sub setRowLabels(a as String, b as String, c as String, d as String)
+            m.top.findNode("rowLabel1").text = a
+            m.top.findNode("rowLabel2").text = b
+            m.top.findNode("rowLabel3").text = c
+            m.top.findNode("rowLabel4").text = d
+        end sub
+
+        sub setProgramTexts(a as String, b as String, c as String, d as String, e as String, f as String, g as String, h as String)
+            m.top.findNode("p11t").text = a
+            m.top.findNode("p12t").text = b
+            m.top.findNode("p21t").text = c
+            m.top.findNode("p22t").text = d
+            m.top.findNode("p31t").text = e
+            m.top.findNode("p32t").text = f
+            m.top.findNode("p41t").text = g
+            m.top.findNode("p42t").text = h
+        end sub
+
+        sub playChannel(channel as Object)
+            content = CreateObject("roSGNode", "ContentNode")
+            content.url = channel.url
+            content.streamformat = "hls"
+            m.video.content = content
+            m.video.control = "play"
+            m.infoTitle.text = channel.title
+            m.infoMeta.text = "Live stream • StreamLine BluTV"
+        end sub
+    ]]></script>
+</component>

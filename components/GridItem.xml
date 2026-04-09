@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="GridItem" extends="Group">
+    <interface>
+        <field id="itemContent" type="node" onChange="itemContentChanged" />
+    </interface>
+
+    <children>
+        <Rectangle
+            id="bg"
+            width="170"
+            height="60"
+            translation="[5,5]"
+            color="0x2e4f8fFF" />
+        <Rectangle
+            id="border"
+            width="170"
+            height="2"
+            translation="[5,63]"
+            color="0x5f86d6FF" />
+        <Label
+            id="timeLabel"
+            translation="[12,10]"
+            width="146"
+            height="20"
+            color="0xEEF4FFFF"
+            font="font:SmallSystemFont" />
+        <Label
+            id="titleLabel"
+            translation="[12,28]"
+            width="146"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumSystemFont" />
+    </children>
+
+    <script type="text/brightscript"><![CDATA[
+        sub init()
+            m.bg = m.top.findNode("bg")
+            m.border = m.top.findNode("border")
+            m.timeLabel = m.top.findNode("timeLabel")
+            m.titleLabel = m.top.findNode("titleLabel")
+        end sub
+
+        sub itemContentChanged()
+            item = m.top.itemContent
+            if item = invalid then return
+
+            m.timeLabel.text = item.time
+            m.titleLabel.text = item.title
+
+            palette = item.palette
+            if palette = invalid or palette = "" then palette = "default"
+
+            if palette = "sports"
+                m.bg.color = "0x356b8cFF"
+                m.border.color = "0x6fb2d7FF"
+            else if palette = "movies"
+                m.bg.color = "0x7b5d88FF"
+                m.border.color = "0xc3a4d0FF"
+            else if palette = "family"
+                m.bg.color = "0x4f7a5aFF"
+                m.border.color = "0x8dc6a0FF"
+            else
+                m.bg.color = "0x2e4f8fFF"
+                m.border.color = "0x5f86d6FF"
+            end if
+        end sub
+    ]]></script>
+</component>
