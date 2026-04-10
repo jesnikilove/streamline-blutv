@@ -197,11 +197,6 @@
                 <Rectangle id="field2Rect" translation="[390,455]" width="500" height="58" color="0x223b73FF" visible="false" />
                 <Rectangle id="field3Rect" translation="[390,520]" width="500" height="58" color="0x223b73FF" visible="false" />
 
-
-                <!-- Real first input field -->
-                <Rectangle id="field1InputBg" translation="[390,380]" width="500" height="58" color="0x223b73FF" visible="false" />
-                <TextEditBox id="field1Input" translation="[402,390]" width="476" height="38" hintText="" text="" visible="false" />
-
 <!-- Hidden for later patches -->
                 <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
                 <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
@@ -223,6 +218,8 @@
 
             m.setupOverlay = m.top.findNode("setupOverlay")
             m.setupStatus = m.top.findNode("setupStatus")
+            m.keyboardDialog = m.top.findNode("keyboardDialog")
+            m.activeFieldId = ""
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -230,14 +227,6 @@
             m.top.findNode("setupTypeButton").observeField("buttonSelected", "onXtreamSetupSelected")
             m.top.findNode("sourceButton").observeField("buttonSelected", "onM3USetupSelected")
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
-
-            m.top.findNode("nicknameButton").observeField("buttonSelected", "onNicknameFieldSelected")
-            m.top.findNode("hostButton").observeField("buttonSelected", "onHostFieldSelected")
-            m.top.findNode("usernameButton").observeField("buttonSelected", "onUsernameFieldSelected")
-
-            m.keyboardDialog = m.top.findNode("keyboardDialog")
-            m.activeFieldId = ""
-            m.keyboardDialog.observeField("buttonSelected", "onKeyboardDone")
 
             m.top.findNode("setupTypeButton").setFocus(true)
             updateChannelsAndGuide("Movies")
@@ -247,49 +236,41 @@
         sub onXtreamSetupSelected()
             hideSetupFields()
 
-            m.top.findNode("field1Rect").visible = false
-            m.top.findNode("field1InputBg").visible = true
-            m.top.findNode("field1Input").visible = true
-            m.top.findNode("field1Input").hintText = "Server URL"
-            m.top.findNode("field1Input").text = ""
-
+            m.top.findNode("nicknameButton").text = "Server URL"
             m.top.findNode("hostButton").text = "Username"
             m.top.findNode("usernameButton").text = "Password"
 
+            m.top.findNode("field1Rect").visible = true
             m.top.findNode("field2Rect").visible = true
             m.top.findNode("field3Rect").visible = true
 
+            m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
             m.top.findNode("usernameButton").visible = true
 
             m.setupStatus.text = "Enter Xtream Codes details."
-            m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
-            m.top.findNode("field1Input").setFocus(true)
+            m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         sub onM3USetupSelected()
             hideSetupFields()
 
-            m.top.findNode("field1Rect").visible = false
-            m.top.findNode("field1InputBg").visible = true
-            m.top.findNode("field1Input").visible = true
-            m.top.findNode("field1Input").hintText = "M3U Playlist URL"
-            m.top.findNode("field1Input").text = ""
-
+            m.top.findNode("nicknameButton").text = "M3U Playlist URL"
             m.top.findNode("hostButton").text = "EPG URL (optional)"
 
+            m.top.findNode("field1Rect").visible = true
             m.top.findNode("field2Rect").visible = true
+
+            m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
 
             m.setupStatus.text = "Enter M3U playlist details."
-            m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
-            m.top.findNode("field1Input").setFocus(true)
+            m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         
 
         sub onFieldFocus()
-            field = m.top.findNode("field1Input")
             if field.hasFocus() then
                 field.control = "keyboard"
             end if
@@ -297,8 +278,6 @@
 
 sub onCloseSetup()
             hideSetupFields()
-            m.top.findNode("field1InputBg").visible = false
-            m.top.findNode("field1Input").visible = false
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
@@ -314,6 +293,33 @@ sub onCloseSetup()
             f1 = m.top.findNode("nicknameButton")
             f2 = m.top.findNode("hostButton")
             f3 = m.top.findNode("usernameButton")
+
+            if key = "OK" or key = "select" then
+                if xt.hasFocus() then
+                    onXtreamSetupSelected()
+                    return true
+                end if
+                if m3u.hasFocus() then
+                    onM3USetupSelected()
+                    return true
+                end if
+                if closeBtn.hasFocus() then
+                    onCloseSetup()
+                    return true
+                end if
+                if f1.visible and f1.hasFocus() then
+                    openKeyboardForField("nicknameButton")
+                    return true
+                end if
+                if f2.visible and f2.hasFocus() then
+                    openKeyboardForField("hostButton")
+                    return true
+                end if
+                if f3.visible and f3.hasFocus() then
+                    openKeyboardForField("usernameButton")
+                    return true
+                end if
+            end if
 
             if key = "back" then
                 if setupFieldsVisible() then
@@ -342,10 +348,7 @@ sub onCloseSetup()
 
             if key = "down" then
                 if xt.hasFocus() or m3u.hasFocus() then
-                    if m.top.findNode("field1Input").visible then
-                        m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
-            m.top.findNode("field1Input").setFocus(true)
-                    else if setupFieldsVisible() then
+                    if setupFieldsVisible() then
                         f1.setFocus(true)
                     else
                         closeBtn.setFocus(true)
@@ -388,12 +391,7 @@ sub onCloseSetup()
                     return true
                 end if
                 if f2.hasFocus() then
-                    if m.top.findNode("field1Input").visible then
-                        m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
-            m.top.findNode("field1Input").setFocus(true)
-                    else
-                        f1.setFocus(true)
-                    end if
+                    f1.setFocus(true)
                     return true
                 end if
                 if f1.hasFocus() then
@@ -406,25 +404,14 @@ sub onCloseSetup()
         end function
 
 
-
-        sub openKeyboardForField(fieldId as String, titleText as String)
+        sub openKeyboardForField(fieldId as String)
             m.activeFieldId = fieldId
             m.setupStatus.text = "Opening keyboard..."
-            m.keyboardDialog.title = titleText
+            m.keyboardDialog.title = "Enter Value"
             m.keyboardDialog.text = ""
+            m.keyboardDialog.buttons = ["OK", "Cancel"]
+            m.keyboardDialog.observeField("buttonSelected", "onKeyboardDone")
             m.top.dialog = m.keyboardDialog
-        end sub
-
-        sub onNicknameFieldSelected()
-            openKeyboardForField("nicknameButton", "Enter Value")
-        end sub
-
-        sub onHostFieldSelected()
-            openKeyboardForField("hostButton", "Enter Value")
-        end sub
-
-        sub onUsernameFieldSelected()
-            openKeyboardForField("usernameButton", "Enter Value")
         end sub
 
         sub onKeyboardDone()
@@ -445,10 +432,6 @@ sub onCloseSetup()
                 end if
                 m.setupStatus.text = "Value saved."
             else
-                if m.activeFieldId <> "" then
-                    target = m.top.findNode(m.activeFieldId)
-                    if target <> invalid then target.setFocus(true)
-                end if
                 m.setupStatus.text = "Canceled."
             end if
 
@@ -460,8 +443,6 @@ sub onCloseSetup()
             m.top.findNode("field2Rect").visible = false
             m.top.findNode("field3Rect").visible = false
 
-            m.top.findNode("field1InputBg").visible = false
-            m.top.findNode("field1Input").visible = false
 
             m.top.findNode("nicknameButton").visible = false
             m.top.findNode("hostButton").visible = false
