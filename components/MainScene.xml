@@ -194,6 +194,11 @@
                 <Rectangle id="field2Rect" translation="[390,455]" width="500" height="58" color="0x223b73FF" visible="false" />
                 <Rectangle id="field3Rect" translation="[390,520]" width="500" height="58" color="0x223b73FF" visible="false" />
 
+
+                <!-- Real first input field -->
+                <Rectangle id="field1InputBg" translation="[390,380]" width="500" height="58" color="0x223b73FF" visible="false" />
+                <TextEditBox id="field1Input" translation="[402,390]" width="476" height="38" hintText="" text="" visible="false" />
+
 <!-- Hidden for later patches -->
                 <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
                 <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
@@ -231,40 +236,47 @@
         sub onXtreamSetupSelected()
             hideSetupFields()
 
-            m.top.findNode("nicknameButton").text = "Server URL"
+            m.top.findNode("field1Rect").visible = false
+            m.top.findNode("field1InputBg").visible = true
+            m.top.findNode("field1Input").visible = true
+            m.top.findNode("field1Input").hintText = "Server URL"
+            m.top.findNode("field1Input").text = ""
+
             m.top.findNode("hostButton").text = "Username"
             m.top.findNode("usernameButton").text = "Password"
 
-            m.top.findNode("field1Rect").visible = true
             m.top.findNode("field2Rect").visible = true
             m.top.findNode("field3Rect").visible = true
 
-            m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
             m.top.findNode("usernameButton").visible = true
 
             m.setupStatus.text = "Enter Xtream Codes details."
-            m.top.findNode("nicknameButton").setFocus(true)
+            m.top.findNode("field1Input").setFocus(true)
         end sub
 
         sub onM3USetupSelected()
             hideSetupFields()
 
-            m.top.findNode("nicknameButton").text = "M3U Playlist URL"
+            m.top.findNode("field1Rect").visible = false
+            m.top.findNode("field1InputBg").visible = true
+            m.top.findNode("field1Input").visible = true
+            m.top.findNode("field1Input").hintText = "M3U Playlist URL"
+            m.top.findNode("field1Input").text = ""
+
             m.top.findNode("hostButton").text = "EPG URL (optional)"
 
-            m.top.findNode("field1Rect").visible = true
             m.top.findNode("field2Rect").visible = true
-
-            m.top.findNode("nicknameButton").visible = true
             m.top.findNode("hostButton").visible = true
 
             m.setupStatus.text = "Enter M3U playlist details."
-            m.top.findNode("nicknameButton").setFocus(true)
+            m.top.findNode("field1Input").setFocus(true)
         end sub
 
         sub onCloseSetup()
             hideSetupFields()
+            m.top.findNode("field1InputBg").visible = false
+            m.top.findNode("field1Input").visible = false
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
@@ -308,7 +320,9 @@
 
             if key = "down" then
                 if xt.hasFocus() or m3u.hasFocus() then
-                    if setupFieldsVisible() then
+                    if m.top.findNode("field1Input").visible then
+                        m.top.findNode("field1Input").setFocus(true)
+                    else if setupFieldsVisible() then
                         f1.setFocus(true)
                     else
                         closeBtn.setFocus(true)
@@ -351,7 +365,11 @@
                     return true
                 end if
                 if f2.hasFocus() then
-                    f1.setFocus(true)
+                    if m.top.findNode("field1Input").visible then
+                        m.top.findNode("field1Input").setFocus(true)
+                    else
+                        f1.setFocus(true)
+                    end if
                     return true
                 end if
                 if f1.hasFocus() then
@@ -368,6 +386,9 @@
             m.top.findNode("field1Rect").visible = false
             m.top.findNode("field2Rect").visible = false
             m.top.findNode("field3Rect").visible = false
+
+            m.top.findNode("field1InputBg").visible = false
+            m.top.findNode("field1Input").visible = false
 
             m.top.findNode("nicknameButton").visible = false
             m.top.findNode("hostButton").visible = false
