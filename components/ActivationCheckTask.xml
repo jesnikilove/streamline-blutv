@@ -3,7 +3,7 @@
     <interface>
         <field id="apiBase" type="string" />
         <field id="deviceCode" type="string" />
-        <field id="channelsJson" type="string" alwaysNotify="true" />
+        <field id="responseJson" type="string" alwaysNotify="true" />
         <field id="errorMessage" type="string" alwaysNotify="true" />
     </interface>
 
@@ -13,7 +13,7 @@
         end sub
 
         sub run()
-            m.top.channelsJson = ""
+            m.top.responseJson = ""
             m.top.errorMessage = ""
 
             apiBase = m.top.apiBase
@@ -24,52 +24,17 @@
                 return
             end if
 
-            activationTransfer = CreateObject("roUrlTransfer")
-            activationTransfer.SetUrl(apiBase + "/api/activate/" + deviceCode)
+            transfer = CreateObject("roUrlTransfer")
+            transfer.SetUrl(apiBase + "/api/activate/" + deviceCode)
 
-            activationResponse = activationTransfer.GetToString()
-            if activationResponse = invalid or activationResponse = "" then
+            response = transfer.GetToString()
+
+            if response = invalid or response = "" then
                 m.top.errorMessage = "No response from server."
                 return
             end if
 
-            activationData = ParseJson(activationResponse)
-            if activationData = invalid or activationData.ok <> true or activationData.activation = invalid then
-                m.top.errorMessage = "Not activated yet."
-                return
-            end if
-
-            activation = activationData.activation
-
-            payload = {
-                nickname: aaString(activation, "nickname")
-                setupType: aaString(activation, "setupType")
-                host: aaString(activation, "serverUrl")
-                username: aaString(activation, "username")
-                password: aaString(activation, "password")
-                m3uUrl: aaString(activation, "playlistUrl")
-                epgUrl: aaString(activation, "epgUrl")
-                forceRefresh: true
-            }
-
-            channelTransfer = CreateObject("roUrlTransfer")
-            channelTransfer.SetUrl(apiBase + "/api/channels")
-            channelTransfer.AddHeader("Content-Type", "application/json")
-
-            channelResponse = channelTransfer.PostFromString(FormatJson(payload))
-            if channelResponse = invalid or channelResponse = "" then
-                m.top.errorMessage = "No channels returned."
-                return
-            end if
-
-            m.top.channelsJson = channelResponse
+            m.top.responseJson = response
         end sub
-
-        function aaString(obj as Dynamic, key as String) as String
-            if obj = invalid then return ""
-            val = obj.Lookup(key)
-            if val = invalid then return ""
-            return val
-        end function
     ]]></script>
 </component>
