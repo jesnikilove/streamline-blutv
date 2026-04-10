@@ -136,6 +136,59 @@
         <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
+
+        <!-- INPUT SUB-SCREEN -->
+        <Group id="inputOverlay" visible="false">
+            <children>
+                <Rectangle width="1280" height="720" color="0x071b4aEE" />
+
+                <Rectangle
+                    width="760"
+                    height="360"
+                    translation="[260,160]"
+                    color="0x162a4fFF" />
+
+                <Label
+                    id="inputTitle"
+                    text="Edit Field"
+                    translation="[340,210]"
+                    width="600"
+                    height="34"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:LargeBoldSystemFont" />
+
+                <Rectangle
+                    translation="[360,290]"
+                    width="560"
+                    height="64"
+                    color="0x223b73FF" />
+
+                <Label
+                    id="inputValuePreview"
+                    text=""
+                    translation="[380,309]"
+                    width="520"
+                    height="26"
+                    color="0xEEF4FFFF"
+                    font="font:MediumSystemFont" />
+
+                <Button
+                    id="inputSaveButton"
+                    translation="[360,400]"
+                    width="240"
+                    height="56"
+                    text="Edit Value" />
+
+                <Button
+                    id="inputCancelButton"
+                    translation="[680,400]"
+                    width="240"
+                    height="56"
+                    text="Back" />
+            </children>
+        </Group>
+
         <!-- SAFE SETUP OVERLAY -->
         
         <Group id="setupOverlay" visible="true">
@@ -215,6 +268,10 @@
 
             m.setupOverlay = m.top.findNode("setupOverlay")
             m.setupStatus = m.top.findNode("setupStatus")
+            m.inputOverlay = m.top.findNode("inputOverlay")
+            m.inputTitle = m.top.findNode("inputTitle")
+            m.inputValuePreview = m.top.findNode("inputValuePreview")
+            m.activeFieldId = ""
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -226,6 +283,8 @@
             m.top.findNode("nicknameButton").observeField("buttonSelected", "onNicknamePressed")
             m.top.findNode("hostButton").observeField("buttonSelected", "onHostPressed")
             m.top.findNode("usernameButton").observeField("buttonSelected", "onUsernamePressed")
+            m.top.findNode("inputSaveButton").observeField("buttonSelected", "onInputSavePressed")
+            m.top.findNode("inputCancelButton").observeField("buttonSelected", "onInputCancelPressed")
 
             m.top.findNode("setupTypeButton").setFocus(true)
             updateChannelsAndGuide("Movies")
@@ -284,6 +343,15 @@ sub onCloseSetup()
 
         function onKeyEvent(key as String, press as Boolean) as Boolean
             if not press then return false
+
+            if m.inputOverlay <> invalid and m.inputOverlay.visible then
+                if key = "back" then
+                    onInputCancelPressed()
+                    return true
+                end if
+                return false
+            end if
+
             if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
 
             xt = m.top.findNode("setupTypeButton")
@@ -292,33 +360,6 @@ sub onCloseSetup()
             f1 = m.top.findNode("nicknameButton")
             f2 = m.top.findNode("hostButton")
             f3 = m.top.findNode("usernameButton")
-
-            if key = "OK" or key = "select" then
-                if xt.hasFocus() then
-                    onXtreamSetupSelected()
-                    return true
-                end if
-                if m3u.hasFocus() then
-                    onM3USetupSelected()
-                    return true
-                end if
-                if closeBtn.hasFocus() then
-                    onCloseSetup()
-                    return true
-                end if
-                if f1.visible and f1.hasFocus() then
-                    openKeyboardForField("nicknameButton")
-                    return true
-                end if
-                if f2.visible and f2.hasFocus() then
-                    openKeyboardForField("hostButton")
-                    return true
-                end if
-                if f3.visible and f3.hasFocus() then
-                    openKeyboardForField("usernameButton")
-                    return true
-                end if
-            end if
 
             if key = "back" then
                 if setupFieldsVisible() then
@@ -403,16 +444,49 @@ sub onCloseSetup()
         end function
 
 
+        sub openInputOverlay(fieldId as String, titleText as String)
+            m.activeFieldId = fieldId
+            m.inputTitle.text = titleText
+            node = m.top.findNode(fieldId)
+            if node <> invalid then
+                m.inputValuePreview.text = node.text
+            else
+                m.inputValuePreview.text = ""
+            end if
+            m.inputOverlay.visible = true
+            m.top.findNode("inputSaveButton").setFocus(true)
+            m.setupStatus.text = "Editing field"
+        end sub
+
+        sub closeInputOverlay()
+            m.inputOverlay.visible = false
+            if m.activeFieldId <> "" then
+                node = m.top.findNode(m.activeFieldId)
+                if node <> invalid then node.setFocus(true)
+            end if
+            m.activeFieldId = ""
+        end sub
+
         sub onNicknamePressed()
-            m.setupStatus.text = "Server URL selected"
+            openInputOverlay("nicknameButton", "Edit Field")
         end sub
 
         sub onHostPressed()
-            m.setupStatus.text = "Username selected"
+            openInputOverlay("hostButton", "Edit Field")
         end sub
 
         sub onUsernamePressed()
-            m.setupStatus.text = "Password selected"
+            openInputOverlay("usernameButton", "Edit Field")
+        end sub
+
+        sub onInputSavePressed()
+            m.setupStatus.text = "Next patch will add real text entry here."
+            closeInputOverlay()
+        end sub
+
+        sub onInputCancelPressed()
+            m.setupStatus.text = "Canceled."
+            closeInputOverlay()
         end sub
 
         sub hideSetupFields()
