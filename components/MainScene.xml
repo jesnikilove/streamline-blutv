@@ -358,7 +358,7 @@
 
             m.isRefreshing = false
 
-            if Instr(1, response, ""ok":true") > 0 then
+            if Instr(1, response, """ok"":true") > 0 then
                 m.setupStatus.text = "Activated!"
                 m.setupOverlay.visible = false
                 m.categoryList.setFocus(true)
