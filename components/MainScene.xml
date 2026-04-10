@@ -446,6 +446,8 @@ sub onCloseSetup()
 
         sub openInputOverlay(fieldId as String, titleText as String)
             m.activeFieldId = fieldId
+            m.setupOverlay.visible = false
+            m.inputOverlay.visible = true
             m.inputTitle.text = titleText
             node = m.top.findNode(fieldId)
             if node <> invalid then
@@ -460,6 +462,7 @@ sub onCloseSetup()
 
         sub closeInputOverlay()
             m.inputOverlay.visible = false
+            m.setupOverlay.visible = true
             if m.activeFieldId <> "" then
                 node = m.top.findNode(m.activeFieldId)
                 if node <> invalid then node.setFocus(true)
