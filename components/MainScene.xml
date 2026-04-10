@@ -252,6 +252,7 @@
             m.top.findNode("usernameButton").visible = true
 
             m.setupStatus.text = "Enter Xtream Codes details."
+            m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
             m.top.findNode("field1Input").setFocus(true)
         end sub
 
@@ -270,10 +271,20 @@
             m.top.findNode("hostButton").visible = true
 
             m.setupStatus.text = "Enter M3U playlist details."
+            m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
             m.top.findNode("field1Input").setFocus(true)
         end sub
 
-        sub onCloseSetup()
+        
+
+        sub onFieldFocus()
+            field = m.top.findNode("field1Input")
+            if field.hasFocus() then
+                field.control = "keyboard"
+            end if
+        end sub
+
+sub onCloseSetup()
             hideSetupFields()
             m.top.findNode("field1InputBg").visible = false
             m.top.findNode("field1Input").visible = false
@@ -321,7 +332,8 @@
             if key = "down" then
                 if xt.hasFocus() or m3u.hasFocus() then
                     if m.top.findNode("field1Input").visible then
-                        m.top.findNode("field1Input").setFocus(true)
+                        m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
+            m.top.findNode("field1Input").setFocus(true)
                     else if setupFieldsVisible() then
                         f1.setFocus(true)
                     else
@@ -366,7 +378,8 @@
                 end if
                 if f2.hasFocus() then
                     if m.top.findNode("field1Input").visible then
-                        m.top.findNode("field1Input").setFocus(true)
+                        m.top.findNode("field1Input").observeField("focusedChild", "onFieldFocus")
+            m.top.findNode("field1Input").setFocus(true)
                     else
                         f1.setFocus(true)
                     end if
