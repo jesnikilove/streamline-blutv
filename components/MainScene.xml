@@ -228,6 +228,10 @@
             m.top.findNode("sourceButton").observeField("buttonSelected", "onM3USetupSelected")
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
 
+            m.top.findNode("nicknameButton").observeField("buttonSelected", "onNicknamePressed")
+            m.top.findNode("hostButton").observeField("buttonSelected", "onHostPressed")
+            m.top.findNode("usernameButton").observeField("buttonSelected", "onUsernamePressed")
+
             m.top.findNode("setupTypeButton").setFocus(true)
             updateChannelsAndGuide("Movies")
         end sub
@@ -436,6 +440,19 @@ sub onCloseSetup()
             end if
 
             m.activeFieldId = ""
+        end sub
+
+
+        sub onNicknamePressed()
+            m.setupStatus.text = "Server URL selected"
+        end sub
+
+        sub onHostPressed()
+            m.setupStatus.text = "Username selected"
+        end sub
+
+        sub onUsernamePressed()
+            m.setupStatus.text = "Password selected"
         end sub
 
         sub hideSetupFields()
