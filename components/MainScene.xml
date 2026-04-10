@@ -147,12 +147,12 @@
 
                 <Rectangle
                     width="900"
-                    height="560"
+                    height="460"
                     translation="[190,120]"
                     color="0x162a4fFF" />
 
                 <Label
-                    text="StreamLine BluTV Setup"
+                    text="Activate StreamLine BluTV"
                     translation="[290,160]"
                     width="700"
                     height="40"
@@ -162,46 +162,70 @@
 
                 <Label
                     id="setupStatus"
-                    text="Choose your setup type"
-                    translation="[340,215]"
-                    width="600"
+                    text="Use this code on your setup website"
+                    translation="[300,215]"
+                    width="680"
                     height="24"
                     horizAlign="center"
                     color="0xB8C7E6FF"
                     font="font:MediumSystemFont" />
 
-                <Button
-                    id="setupTypeButton"
-                    translation="[260,300]"
-                    width="320"
-                    height="64"
-                    text="Xtream Codes" />
+                <Label
+                    text="Device Code"
+                    translation="[470,280]"
+                    width="340"
+                    height="24"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:MediumBoldSystemFont" />
+
+                <Rectangle
+                    translation="[410,320]"
+                    width="460"
+                    height="82"
+                    color="0x223b73FF" />
+
+                <Label
+                    id="deviceCodeValue"
+                    text="BLU-TV-001"
+                    translation="[430,342]"
+                    width="420"
+                    height="34"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:LargeBoldSystemFont" />
 
                 <Button
-                    id="sourceButton"
-                    translation="[700,300]"
-                    width="320"
-                    height="64"
-                    text="M3U Playlist" />
+                    id="activateButton"
+                    translation="[250,455]"
+                    width="240"
+                    height="58"
+                    text="Activate on Web" />
+
+                <Button
+                    id="refreshButton"
+                    translation="[520,455]"
+                    width="240"
+                    height="58"
+                    text="Refresh" />
 
                 <Button
                     id="closeSetupButton"
-                    translation="[480,625]"
-                    width="320"
-                    height="56"
+                    translation="[790,455]"
+                    width="240"
+                    height="58"
                     text="Close Setup" />
 
-                
-                <!-- Visible field boxes -->
-                <Rectangle id="field1Rect" translation="[390,380]" width="500" height="58" color="0x223b73FF" visible="false" />
-                <Rectangle id="field2Rect" translation="[390,455]" width="500" height="58" color="0x223b73FF" visible="false" />
-                <Rectangle id="field3Rect" translation="[390,520]" width="500" height="58" color="0x223b73FF" visible="false" />
-
-<!-- Hidden for later patches -->
-                <Button id="nicknameButton" translation="[390,380]" width="500" height="58" text="" visible="false" />
-                <Button id="hostButton" translation="[390,455]" width="500" height="58" text="" visible="false" />
-                <Button id="usernameButton" translation="[390,520]" width="500" height="58" text="" visible="false" />
-                <Button id="passwordButton" translation="[390,605]" width="500" height="58" text="" visible="false" />
+                <!-- Hidden legacy nodes kept for stability -->
+                <Rectangle id="field1Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Rectangle id="field2Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Rectangle id="field3Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Button id="setupTypeButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="sourceButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="nicknameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="hostButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="usernameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="passwordButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
                 <Button id="continueButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
             </children>
         </Group>
@@ -224,52 +248,12 @@
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
 
-            m.top.findNode("setupTypeButton").observeField("buttonSelected", "onXtreamSetupSelected")
-            m.top.findNode("sourceButton").observeField("buttonSelected", "onM3USetupSelected")
+            m.top.findNode("activateButton").observeField("buttonSelected", "onActivatePressed")
+            m.top.findNode("refreshButton").observeField("buttonSelected", "onRefreshPressed")
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
 
-            m.top.findNode("nicknameButton").observeField("buttonSelected", "onNicknamePressed")
-            m.top.findNode("hostButton").observeField("buttonSelected", "onHostPressed")
-            m.top.findNode("usernameButton").observeField("buttonSelected", "onUsernamePressed")
-
-            m.top.findNode("setupTypeButton").setFocus(true)
+            m.top.findNode("activateButton").setFocus(true)
             updateChannelsAndGuide("Movies")
-        end sub
-
-
-        sub onXtreamSetupSelected()
-            hideSetupFields()
-
-            m.top.findNode("nicknameButton").text = "Server URL"
-            m.top.findNode("hostButton").text = "Username"
-            m.top.findNode("usernameButton").text = "Password"
-
-            m.top.findNode("field1Rect").visible = true
-            m.top.findNode("field2Rect").visible = true
-            m.top.findNode("field3Rect").visible = true
-
-            m.top.findNode("nicknameButton").visible = true
-            m.top.findNode("hostButton").visible = true
-            m.top.findNode("usernameButton").visible = true
-
-            m.setupStatus.text = "Enter Xtream Codes details."
-            m.top.findNode("nicknameButton").setFocus(true)
-        end sub
-
-        sub onM3USetupSelected()
-            hideSetupFields()
-
-            m.top.findNode("nicknameButton").text = "M3U Playlist URL"
-            m.top.findNode("hostButton").text = "EPG URL (optional)"
-
-            m.top.findNode("field1Rect").visible = true
-            m.top.findNode("field2Rect").visible = true
-
-            m.top.findNode("nicknameButton").visible = true
-            m.top.findNode("hostButton").visible = true
-
-            m.setupStatus.text = "Enter M3U playlist details."
-            m.top.findNode("nicknameButton").setFocus(true)
         end sub
 
         
@@ -279,127 +263,59 @@
                 field.control = "keyboard"
             end if
         end sub
-
-sub onCloseSetup()
-            hideSetupFields()
+        sub onCloseSetup()
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
+
 
 
         function onKeyEvent(key as String, press as Boolean) as Boolean
             if not press then return false
             if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
 
-            xt = m.top.findNode("setupTypeButton")
-            m3u = m.top.findNode("sourceButton")
+            activateBtn = m.top.findNode("activateButton")
+            refreshBtn = m.top.findNode("refreshButton")
             closeBtn = m.top.findNode("closeSetupButton")
-            f1 = m.top.findNode("nicknameButton")
-            f2 = m.top.findNode("hostButton")
-            f3 = m.top.findNode("usernameButton")
 
             if key = "OK" or key = "select" then
-                if xt.hasFocus() then
-                    onXtreamSetupSelected()
+                if activateBtn.hasFocus() then
+                    onActivatePressed()
                     return true
                 end if
-                if m3u.hasFocus() then
-                    onM3USetupSelected()
+                if refreshBtn.hasFocus() then
+                    onRefreshPressed()
                     return true
                 end if
                 if closeBtn.hasFocus() then
                     onCloseSetup()
-                    return true
-                end if
-                if f1.visible and f1.hasFocus() then
-                    openKeyboardForField("nicknameButton")
-                    return true
-                end if
-                if f2.visible and f2.hasFocus() then
-                    openKeyboardForField("hostButton")
-                    return true
-                end if
-                if f3.visible and f3.hasFocus() then
-                    openKeyboardForField("usernameButton")
                     return true
                 end if
             end if
 
             if key = "back" then
-                if setupFieldsVisible() then
-                    hideSetupFields()
-                    m.setupStatus.text = "Choose your setup type"
-                    xt.setFocus(true)
-                else
-                    onCloseSetup()
-                end if
+                onCloseSetup()
                 return true
             end if
 
             if key = "right" then
-                if xt.hasFocus() then
-                    m3u.setFocus(true)
+                if activateBtn.hasFocus() then
+                    refreshBtn.setFocus(true)
                     return true
                 end if
-            end if
-
-            if key = "left" then
-                if m3u.hasFocus() then
-                    xt.setFocus(true)
-                    return true
-                end if
-            end if
-
-            if key = "down" then
-                if xt.hasFocus() or m3u.hasFocus() then
-                    if setupFieldsVisible() then
-                        f1.setFocus(true)
-                    else
-                        closeBtn.setFocus(true)
-                    end if
-                    return true
-                end if
-                if f1.hasFocus() then
-                    if f2.visible then f2.setFocus(true)
-                    return true
-                end if
-                if f2.hasFocus() then
-                    if f3.visible then
-                        f3.setFocus(true)
-                    else
-                        closeBtn.setFocus(true)
-                    end if
-                    return true
-                end if
-                if f3.hasFocus() then
+                if refreshBtn.hasFocus() then
                     closeBtn.setFocus(true)
                     return true
                 end if
             end if
 
-            if key = "up" then
+            if key = "left" then
                 if closeBtn.hasFocus() then
-                    if f3.visible then
-                        f3.setFocus(true)
-                    else if f2.visible then
-                        f2.setFocus(true)
-                    else if f1.visible then
-                        f1.setFocus(true)
-                    else
-                        xt.setFocus(true)
-                    end if
+                    refreshBtn.setFocus(true)
                     return true
                 end if
-                if f3.hasFocus() then
-                    f2.setFocus(true)
-                    return true
-                end if
-                if f2.hasFocus() then
-                    f1.setFocus(true)
-                    return true
-                end if
-                if f1.hasFocus() then
-                    xt.setFocus(true)
+                if refreshBtn.hasFocus() then
+                    activateBtn.setFocus(true)
                     return true
                 end if
             end if
@@ -441,34 +357,19 @@ sub onCloseSetup()
 
             m.activeFieldId = ""
         end sub
-
-
-        sub onNicknamePressed()
-            m.setupStatus.text = "Server URL selected"
+        sub onActivatePressed()
+            m.setupStatus.text = "Go to your website and enter code " + m.top.findNode("deviceCodeValue").text
         end sub
 
-        sub onHostPressed()
-            m.setupStatus.text = "Username selected"
-        end sub
-
-        sub onUsernamePressed()
-            m.setupStatus.text = "Password selected"
+        sub onRefreshPressed()
+            m.setupStatus.text = "After website activation, use Refresh here."
         end sub
 
         sub hideSetupFields()
-            m.top.findNode("field1Rect").visible = false
-            m.top.findNode("field2Rect").visible = false
-            m.top.findNode("field3Rect").visible = false
-
-
-            m.top.findNode("nicknameButton").visible = false
-            m.top.findNode("hostButton").visible = false
-            m.top.findNode("usernameButton").visible = false
-            m.top.findNode("passwordButton").visible = false
         end sub
 
         function setupFieldsVisible() as Boolean
-            return m.top.findNode("nicknameButton").visible or m.top.findNode("hostButton").visible or m.top.findNode("usernameButton").visible
+            return false
         end function
 
         sub buildCategories()
