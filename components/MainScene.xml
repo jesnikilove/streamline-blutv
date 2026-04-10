@@ -322,22 +322,27 @@
         end sub
         sub onRefreshPressed()
             if m.isRefreshing then
-                m.setupStatus.text = "Still checking activation..."
+                m.setupStatus.text = "Still checking..."
                 return
             end if
-
-            ensureActivationTask()
 
             m.isRefreshing = true
             m.setupStatus.text = "Checking activation..."
 
-            m.refreshTimeoutTimer.control = "stop"
-            m.refreshTimeoutTimer.control = "start"
+            ensureActivationTask()
 
             m.activationTask.apiBase = m.apiBase
             m.activationTask.deviceCode = m.deviceCode
             m.activationTask.control = "RUN"
+
+            sleep(3000)
+
+            if m.isRefreshing then
+                m.isRefreshing = false
+                m.setupStatus.text = "Server not responding. Try again."
+            end if
         end sub
+
 
 
 
