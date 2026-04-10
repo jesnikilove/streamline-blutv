@@ -136,6 +136,9 @@
         <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
+        
+        <KeyboardDialog id="keyboardDialog" visible="false" />
+
         <!-- SAFE SETUP OVERLAY -->
         
         <Group id="setupOverlay" visible="true">
@@ -227,6 +230,14 @@
             m.top.findNode("setupTypeButton").observeField("buttonSelected", "onXtreamSetupSelected")
             m.top.findNode("sourceButton").observeField("buttonSelected", "onM3USetupSelected")
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
+
+            m.top.findNode("nicknameButton").observeField("buttonSelected", "onNicknameFieldSelected")
+            m.top.findNode("hostButton").observeField("buttonSelected", "onHostFieldSelected")
+            m.top.findNode("usernameButton").observeField("buttonSelected", "onUsernameFieldSelected")
+
+            m.keyboardDialog = m.top.findNode("keyboardDialog")
+            m.activeFieldId = ""
+            m.keyboardDialog.observeField("buttonSelected", "onKeyboardDone")
 
             m.top.findNode("setupTypeButton").setFocus(true)
             updateChannelsAndGuide("Movies")
@@ -394,6 +405,55 @@ sub onCloseSetup()
             return false
         end function
 
+
+
+        sub openKeyboardForField(fieldId as String, titleText as String)
+            m.activeFieldId = fieldId
+            m.setupStatus.text = "Opening keyboard..."
+            m.keyboardDialog.title = titleText
+            m.keyboardDialog.text = ""
+            m.top.dialog = m.keyboardDialog
+        end sub
+
+        sub onNicknameFieldSelected()
+            openKeyboardForField("nicknameButton", "Enter Value")
+        end sub
+
+        sub onHostFieldSelected()
+            openKeyboardForField("hostButton", "Enter Value")
+        end sub
+
+        sub onUsernameFieldSelected()
+            openKeyboardForField("usernameButton", "Enter Value")
+        end sub
+
+        sub onKeyboardDone()
+            if m.keyboardDialog = invalid then return
+
+            selected = m.keyboardDialog.buttonSelected
+            entered = m.keyboardDialog.text
+
+            m.top.dialog = invalid
+
+            if selected = 0 and m.activeFieldId <> "" then
+                target = m.top.findNode(m.activeFieldId)
+                if target <> invalid then
+                    if entered <> invalid and entered <> "" then
+                        target.text = entered
+                    end if
+                    target.setFocus(true)
+                end if
+                m.setupStatus.text = "Value saved."
+            else
+                if m.activeFieldId <> "" then
+                    target = m.top.findNode(m.activeFieldId)
+                    if target <> invalid then target.setFocus(true)
+                end if
+                m.setupStatus.text = "Canceled."
+            end if
+
+            m.activeFieldId = ""
+        end sub
 
         sub hideSetupFields()
             m.top.findNode("field1Rect").visible = false
