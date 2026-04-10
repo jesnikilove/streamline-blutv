@@ -136,9 +136,6 @@
         <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
-        
-        <KeyboardDialog id="keyboardDialog" visible="false" />
-
         <!-- SAFE SETUP OVERLAY -->
         
         <Group id="setupOverlay" visible="true">
@@ -244,10 +241,6 @@
             m.setupStatus = m.top.findNode("setupStatus")
             m.deviceCode = m.top.findNode("deviceCodeValue").text
             m.apiBase = "http://192.168.1.81:3001"
-            m.deviceCode = m.top.findNode("deviceCodeValue").text
-            m.apiBase = "http://192.168.1.81:3001"
-            m.keyboardDialog = m.top.findNode("keyboardDialog")
-            m.activeFieldId = ""
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -258,14 +251,6 @@
 
             m.top.findNode("activateButton").setFocus(true)
             updateChannelsAndGuide("Movies")
-        end sub
-
-        
-
-        sub onFieldFocus()
-            if field.hasFocus() then
-                field.control = "keyboard"
-            end if
         end sub
         sub onCloseSetup()
             m.setupOverlay.visible = false
@@ -326,48 +311,13 @@
 
             return false
         end function
-
-
-        sub openKeyboardForField(fieldId as String)
-            m.activeFieldId = fieldId
-            m.setupStatus.text = "Opening keyboard..."
-            m.keyboardDialog.title = "Enter Value"
-            m.keyboardDialog.text = ""
-            m.keyboardDialog.buttons = ["OK", "Cancel"]
-            m.keyboardDialog.observeField("buttonSelected", "onKeyboardDone")
-            m.top.dialog = m.keyboardDialog
-        end sub
-
-        sub onKeyboardDone()
-            if m.keyboardDialog = invalid then return
-
-            selected = m.keyboardDialog.buttonSelected
-            entered = m.keyboardDialog.text
-
-            m.top.dialog = invalid
-
-            if selected = 0 and m.activeFieldId <> "" then
-                target = m.top.findNode(m.activeFieldId)
-                if target <> invalid then
-                    if entered <> invalid and entered <> "" then
-                        target.text = entered
-                    end if
-                    target.setFocus(true)
-                end if
-                m.setupStatus.text = "Value saved."
-            else
-                m.setupStatus.text = "Canceled."
-            end if
-
-            m.activeFieldId = ""
-        end sub
         sub onActivatePressed()
             m.setupStatus.text = "Go to your website and enter code " + m.top.findNode("deviceCodeValue").text
         end sub
-
         sub onRefreshPressed()
-            m.setupStatus.text = "After website activation, use Refresh here."
+            m.setupStatus.text = "Refresh will check activation after we move it into a Roku Task."
         end sub
+
 
         sub hideSetupFields()
         end sub
