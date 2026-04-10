@@ -136,8 +136,6 @@
         <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
         <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
-        <Timer id="refreshTimeoutTimer" duration="4" repeat="false" />
-
         <!-- SAFE SETUP OVERLAY -->
         
         <Group id="setupOverlay" visible="true">
@@ -245,7 +243,6 @@
             m.apiBase = "http://192.168.1.81:3001"
             m.activationTask = invalid
             m.isRefreshing = false
-            m.refreshTimeoutTimer = m.top.findNode("refreshTimeoutTimer")
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -253,7 +250,6 @@
             m.top.findNode("activateButton").observeField("buttonSelected", "onActivatePressed")
             m.top.findNode("refreshButton").observeField("buttonSelected", "onRefreshPressed")
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
-            m.refreshTimeoutTimer.observeField("fire", "onRefreshTimeout")
 
             m.top.findNode("activateButton").setFocus(true)
             updateChannelsAndGuide("Movies")
@@ -338,10 +334,6 @@
 
 
 
-
-
-
-
         sub hideSetupFields()
         end sub
 
@@ -365,7 +357,6 @@
             if response = invalid or response = "" then return
 
             m.isRefreshing = false
-            m.refreshTimeoutTimer.control = "stop"
 
             if Instr(1, response, """ok"":true") > 0 then
                 m.setupStatus.text = "Activated!"
@@ -383,16 +374,7 @@
             if err = invalid or err = "" then return
 
             m.isRefreshing = false
-            m.refreshTimeoutTimer.control = "stop"
             m.setupStatus.text = err
-        end sub
-
-
-        sub onRefreshTimeout()
-            if m.isRefreshing then
-                m.isRefreshing = false
-                m.setupStatus.text = "Server took too long. Try Refresh again."
-            end if
         end sub
 
         sub buildCategories()
