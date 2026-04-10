@@ -244,6 +244,8 @@
             m.setupStatus = m.top.findNode("setupStatus")
             m.deviceCode = m.top.findNode("deviceCodeValue").text
             m.apiBase = "http://192.168.1.81:3001"
+            m.deviceCode = m.top.findNode("deviceCodeValue").text
+            m.apiBase = "http://192.168.1.81:3001"
             m.keyboardDialog = m.top.findNode("keyboardDialog")
             m.activeFieldId = ""
             buildCategories()
