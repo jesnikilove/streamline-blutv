@@ -242,7 +242,9 @@
             m.deviceCode = m.top.findNode("deviceCodeValue").text
             m.apiBase = "http://192.168.1.81:3001"
             m.activationTask = invalid
+            m.loadChannelsTask = invalid
             m.isRefreshing = false
+            m.loadedChannels = invalid
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -334,6 +336,7 @@
 
 
 
+
         sub hideSetupFields()
         end sub
 
@@ -349,7 +352,6 @@
             m.activationTask.observeField("responseJson", "onActivationTaskResponse")
             m.activationTask.observeField("errorMessage", "onActivationTaskError")
         end sub
-
         sub onActivationTaskResponse()
             if m.activationTask = invalid then return
 
@@ -358,14 +360,16 @@
 
             m.isRefreshing = false
 
-            if Instr(1, response, """ok"":true") > 0 then
-                m.setupStatus.text = "Activated!"
-                m.setupOverlay.visible = false
-                m.categoryList.setFocus(true)
-            else
+            data = ParseJson(response)
+            if data = invalid or data.ok <> true or data.activation = invalid then
                 m.setupStatus.text = "Not activated yet."
+                return
             end if
+
+            m.setupStatus.text = "Activated!"
+            startLoadingChannels(data.activation)
         end sub
+
 
         sub onActivationTaskError()
             if m.activationTask = invalid then return
@@ -376,6 +380,96 @@
             m.isRefreshing = false
             m.setupStatus.text = err
         end sub
+
+
+        sub ensureLoadChannelsTask()
+            if m.loadChannelsTask <> invalid then return
+
+            m.loadChannelsTask = CreateObject("roSGNode", "LoadChannelsTask")
+            m.loadChannelsTask.observeField("responseJson", "onLoadChannelsTaskResponse")
+            m.loadChannelsTask.observeField("errorMessage", "onLoadChannelsTaskError")
+        end sub
+
+        sub startLoadingChannels(activation as Object)
+            ensureLoadChannelsTask()
+
+            m.setupStatus.text = "Loading channels..."
+
+            m.loadChannelsTask.apiBase = m.apiBase
+            m.loadChannelsTask.setupType = aaLookupString(activation, "setupType")
+            m.loadChannelsTask.host = aaLookupString(activation, "serverUrl")
+            m.loadChannelsTask.username = aaLookupString(activation, "username")
+            m.loadChannelsTask.password = aaLookupString(activation, "password")
+            m.loadChannelsTask.m3uUrl = aaLookupString(activation, "playlistUrl")
+            m.loadChannelsTask.epgUrl = aaLookupString(activation, "epgUrl")
+            m.loadChannelsTask.control = "RUN"
+        end sub
+
+        sub onLoadChannelsTaskResponse()
+            if m.loadChannelsTask = invalid then return
+
+            raw = m.loadChannelsTask.responseJson
+            if raw = invalid or raw = "" then return
+
+            data = ParseJson(raw)
+            if data = invalid or data.ok <> true or data.channels = invalid or data.channels.Count() = 0 then
+                m.setupStatus.text = "No channels returned."
+                return
+            end if
+
+            m.loadedChannels = data.channels
+            populateLoadedChannels()
+
+            m.setupStatus.text = "Channels loaded!"
+            m.setupOverlay.visible = false
+            m.channelList.setFocus(true)
+        end sub
+
+        sub onLoadChannelsTaskError()
+            if m.loadChannelsTask = invalid then return
+
+            err = m.loadChannelsTask.errorMessage
+            if err = invalid or err = "" then return
+
+            m.setupStatus.text = err
+        end sub
+
+        sub populateLoadedChannels()
+            if m.loadedChannels = invalid then return
+
+            content = CreateObject("roSGNode", "ContentNode")
+
+            for each ch in m.loadedChannels
+                item = content.CreateChild("ContentNode")
+
+                num = aaLookupString(ch, "number")
+                nm = aaLookupString(ch, "name")
+                url = aaLookupString(ch, "streamUrl")
+
+                if num <> "" then
+                    item.title = num + "  " + nm
+                else
+                    item.title = nm
+                end if
+
+                item.addField("url", "string", true)
+                item.url = url
+            end for
+
+            m.channelList.content = content
+
+            firstChannel = m.channelList.content.getChild(0)
+            if firstChannel <> invalid then
+                playChannel(firstChannel)
+            end if
+        end sub
+
+        function aaLookupString(obj as Dynamic, key as String) as String
+            if obj = invalid then return ""
+            val = obj.Lookup(key)
+            if val = invalid then return ""
+            return val
+        end function
 
         sub buildCategories()
             content = CreateObject("roSGNode", "ContentNode")

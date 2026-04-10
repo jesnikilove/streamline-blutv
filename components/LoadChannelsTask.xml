@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LoadChannelsTask" extends="Task">
+    <interface>
+        <field id="apiBase" type="string" />
+        <field id="setupType" type="string" />
+        <field id="host" type="string" />
+        <field id="username" type="string" />
+        <field id="password" type="string" />
+        <field id="m3uUrl" type="string" />
+        <field id="epgUrl" type="string" />
+        <field id="responseJson" type="string" alwaysNotify="true" />
+        <field id="errorMessage" type="string" alwaysNotify="true" />
+    </interface>
+
+    <script type="text/brightscript"><![CDATA[
+        sub init()
+            m.top.functionName = "run"
+        end sub
+
+        sub run()
+            m.top.responseJson = ""
+            m.top.errorMessage = ""
+
+            payload = {
+                setupType: m.top.setupType
+                host: m.top.host
+                username: m.top.username
+                password: m.top.password
+                m3uUrl: m.top.m3uUrl
+                epgUrl: m.top.epgUrl
+                forceRefresh: true
+            }
+
+            transfer = CreateObject("roUrlTransfer")
+            transfer.SetUrl(m.top.apiBase + "/api/channels")
+            transfer.AddHeader("Content-Type", "application/json")
+
+            response = transfer.PostFromString(FormatJson(payload))
+
+            if response = invalid or response = "" then
+                m.top.errorMessage = "No channels returned."
+                return
+            end if
+
+            m.top.responseJson = response
+        end sub
+    ]]></script>
+</component>
