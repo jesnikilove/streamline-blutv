@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ActivationCheckTask" extends="Task">
+    <interface>
+        <field id="apiBase" type="string" />
+        <field id="deviceCode" type="string" />
+        <field id="responseJson" type="string" alwaysNotify="true" />
+        <field id="errorMessage" type="string" alwaysNotify="true" />
+    </interface>
+
+    <script type="text/brightscript"><![CDATA[
+        sub init()
+            m.top.functionName = "run"
+        end sub
+
+        sub run()
+            m.top.responseJson = ""
+            m.top.errorMessage = ""
+
+            apiBase = m.top.apiBase
+            deviceCode = m.top.deviceCode
+
+            if apiBase = invalid or apiBase = "" or deviceCode = invalid or deviceCode = "" then
+                m.top.errorMessage = "Missing activation settings."
+                return
+            end if
+
+            transfer = CreateObject("roUrlTransfer")
+            transfer.SetUrl(apiBase + "/api/activate/" + deviceCode)
+
+            response = transfer.GetToString()
+
+            if response = invalid or response = "" then
+                m.top.errorMessage = "No response from server."
+                return
+            end if
+
+            m.top.responseJson = response
+        end sub
+    ]]></script>
+</component>

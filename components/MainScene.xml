@@ -241,6 +241,8 @@
             m.setupStatus = m.top.findNode("setupStatus")
             m.deviceCode = m.top.findNode("deviceCodeValue").text
             m.apiBase = "http://192.168.1.81:3001"
+            m.activationTask = invalid
+            m.isRefreshing = false
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -315,8 +317,21 @@
             m.setupStatus.text = "Go to your website and enter code " + m.top.findNode("deviceCodeValue").text
         end sub
         sub onRefreshPressed()
-            m.setupStatus.text = "Refresh will check activation after we move it into a Roku Task."
+            if m.isRefreshing then
+                m.setupStatus.text = "Still checking activation..."
+                return
+            end if
+
+            ensureActivationTask()
+
+            m.isRefreshing = true
+            m.setupStatus.text = "Checking activation..."
+
+            m.activationTask.apiBase = m.apiBase
+            m.activationTask.deviceCode = m.deviceCode
+            m.activationTask.control = "RUN"
         end sub
+
 
 
         sub hideSetupFields()
@@ -325,6 +340,42 @@
         function setupFieldsVisible() as Boolean
             return false
         end function
+
+
+        sub ensureActivationTask()
+            if m.activationTask <> invalid then return
+
+            m.activationTask = CreateObject("roSGNode", "ActivationCheckTask")
+            m.activationTask.observeField("responseJson", "onActivationTaskResponse")
+            m.activationTask.observeField("errorMessage", "onActivationTaskError")
+        end sub
+
+        sub onActivationTaskResponse()
+            if m.activationTask = invalid then return
+
+            response = m.activationTask.responseJson
+            if response = invalid or response = "" then return
+
+            m.isRefreshing = false
+
+            if Instr(1, response, ""ok":true") > 0 then
+                m.setupStatus.text = "Activated!"
+                m.setupOverlay.visible = false
+                m.categoryList.setFocus(true)
+            else
+                m.setupStatus.text = "Not activated yet."
+            end if
+        end sub
+
+        sub onActivationTaskError()
+            if m.activationTask = invalid then return
+
+            err = m.activationTask.errorMessage
+            if err = invalid or err = "" then return
+
+            m.isRefreshing = false
+            m.setupStatus.text = err
+        end sub
 
         sub buildCategories()
             content = CreateObject("roSGNode", "ContentNode")
