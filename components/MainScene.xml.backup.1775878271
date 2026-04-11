@@ -430,10 +430,9 @@
             clearDemoGuideForLoadedChannels()
 
             m.isLoadingChannels = false
-            m.setupStatus.text = "Channels loaded."
+            m.setupStatus.text = "Loaded 1 test channel."
             m.setupOverlay.visible = false
             m.video.control = "stop"
-            m.infoMeta.text = "Loaded provider channels"
             m.channelList.setFocus(true)
             print "DEBUG: finished onLoadChannelsTaskResponse"
         end sub
@@ -482,13 +481,20 @@
         end sub
 
         sub clearDemoGuideForLoadedChannels()
-            ' Remove fake guide names completely
+            ' Show loaded channel names in the left row labels
             m.top.findNode("rowLabel1").text = ""
             m.top.findNode("rowLabel2").text = ""
             m.top.findNode("rowLabel3").text = ""
             m.top.findNode("rowLabel4").text = ""
 
-            ' Remove fake guide titles completely
+            if m.loadedChannels <> invalid then
+                if m.loadedChannels.Count() > 0 then m.top.findNode("rowLabel1").text = aaLookupString(m.loadedChannels[0], "name")
+                if m.loadedChannels.Count() > 1 then m.top.findNode("rowLabel2").text = aaLookupString(m.loadedChannels[1], "name")
+                if m.loadedChannels.Count() > 2 then m.top.findNode("rowLabel3").text = aaLookupString(m.loadedChannels[2], "name")
+                if m.loadedChannels.Count() > 3 then m.top.findNode("rowLabel4").text = aaLookupString(m.loadedChannels[3], "name")
+            end if
+
+            ' Blank old demo titles
             m.top.findNode("p11t").text = ""
             m.top.findNode("p12t").text = ""
             m.top.findNode("p21t").text = ""
@@ -498,15 +504,15 @@
             m.top.findNode("p41t").text = ""
             m.top.findNode("p42t").text = ""
 
-            ' Fade out fake guide blocks
-            m.top.findNode("p11").color = "0x162a4f44"
-            m.top.findNode("p12").color = "0x162a4f44"
-            m.top.findNode("p21").color = "0x162a4f44"
-            m.top.findNode("p22").color = "0x162a4f44"
-            m.top.findNode("p31").color = "0x162a4f44"
-            m.top.findNode("p32").color = "0x162a4f44"
-            m.top.findNode("p41").color = "0x162a4f44"
-            m.top.findNode("p42").color = "0x162a4f44"
+            ' Dim old demo program blocks so they do not look active
+            m.top.findNode("p11").color = "0x223b73AA"
+            m.top.findNode("p12").color = "0x223b73AA"
+            m.top.findNode("p21").color = "0x223b73AA"
+            m.top.findNode("p22").color = "0x223b73AA"
+            m.top.findNode("p31").color = "0x223b73AA"
+            m.top.findNode("p32").color = "0x223b73AA"
+            m.top.findNode("p41").color = "0x223b73AA"
+            m.top.findNode("p42").color = "0x223b73AA"
         end sub
 
         function aaLookupString(obj as Dynamic, key as String) as String
@@ -548,7 +554,7 @@
             item = m.channelList.content.getChild(m.channelList.itemFocused)
             if item <> invalid then
                 m.infoTitle.text = item.title
-                m.infoMeta.text = "Loaded provider channel"
+                m.infoMeta.text = "Loaded channel selected"
                 print "DEBUG: channel focus -> "; item.title
             end if
         end sub
