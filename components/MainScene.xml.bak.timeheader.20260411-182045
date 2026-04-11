@@ -721,6 +721,116 @@
 
 
 
+        function guideMinutesFromStart(startText as String) as Integer
+            if startText = invalid or startText = "" then return -1
+
+            s = UCase(Trim(startText))
+            s = Replace(s, ".", "")
+            parts = s.Tokenize(" ")
+            if parts.Count() < 2 then return -1
+
+            hm = parts[0].Tokenize(":")
+            if hm.Count() < 2 then return -1
+
+            hour = Val(hm[0])
+            minute = Val(hm[1])
+            suffix = parts[1]
+
+            if suffix = "PM" and hour < 12 then hour = hour + 12
+            if suffix = "AM" and hour = 12 then hour = 0
+
+            total = hour * 60 + minute
+            guideStart = 12 * 60 ' 12:00 PM
+            return total - guideStart
+        end function
+
+
+
+
+
+
+
+        sub renderProgramsIntoGuideRow(rowIndex as Integer, programs as Object)
+            if programs = invalid or programs.Count() = 0 then return
+
+            rowY = 433
+            rowLabelId = "rowLabel1"
+            rect1 = "p11"
+            text1 = "p11t"
+            rect2 = "p12"
+            text2 = "p12t"
+
+            if rowIndex = 1 then
+                rowY = 487
+                rowLabelId = "rowLabel2"
+                rect1 = "p21"
+                text1 = "p21t"
+                rect2 = "p22"
+                text2 = "p22t"
+            else if rowIndex = 2 then
+                rowY = 541
+                rowLabelId = "rowLabel3"
+                rect1 = "p31"
+                text1 = "p31t"
+                rect2 = "p32"
+                text2 = "p32t"
+            else if rowIndex = 3 then
+                rowY = 595
+                rowLabelId = "rowLabel4"
+                rect1 = "p41"
+                text1 = "p41t"
+                rect2 = "p42"
+                text2 = "p42t"
+            end if
+
+            m.top.findNode(rowLabelId).text = "Guide"
+
+            firstWidth = 0
+            secondWidth = 0
+            firstTitle = ""
+            secondTitle = ""
+
+            prog1 = programs[0]
+            start1 = guideMinutesFromStart(safeProgramStart(prog1))
+            if start1 < 0 then start1 = 0
+            if start1 > 180 then start1 = 180
+
+            nextStart = 180
+            if programs.Count() > 1 then
+                tmp = guideMinutesFromStart(safeProgramStart(programs[1]))
+                if tmp >= 0 then nextStart = tmp
+            end if
+
+            if nextStart < start1 then nextStart = start1 + 30
+            if nextStart > 180 then nextStart = 180
+
+            firstWidth = Int((nextStart - start1) * 4)
+            if firstWidth < 90 then firstWidth = 90
+            if firstWidth > 680 then firstWidth = 680
+
+            firstTitle = safeProgramTitle(prog1)
+
+            secondX = 590 + firstWidth + 8
+
+            if programs.Count() > 1 and secondX < 1240 then
+                prog2 = programs[1]
+                secondTitle = safeProgramTitle(prog2)
+                secondWidth = 1240 - secondX
+                if secondWidth < 90 then secondWidth = 90
+                if secondWidth > 400 then secondWidth = 400
+            end if
+
+            setGuideBlock(rect1, text1, 590, rowY, firstWidth, firstTitle)
+
+            if secondTitle <> "" then
+                setGuideBlock(rect2, text2, secondX, rowY, secondWidth, secondTitle)
+            else
+                setGuideBlock(rect2, text2, secondX, rowY, 120, "")
+            end if
+        end sub
+
+
+
 
 
         sub setGuideBlock(rectId as String, labelId as String, x as Integer, y as Integer, w as Integer, title as String)

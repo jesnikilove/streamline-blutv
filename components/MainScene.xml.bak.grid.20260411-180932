@@ -249,7 +249,6 @@
             m.loadChannelsTask = invalid
             m.isRefreshing = false
             m.isLoadingChannels = false
-            m.channelPrograms = []
 
             if m.progressTimer <> invalid then
                 m.progressTimer.control = "stop"
@@ -585,7 +584,6 @@
             if m.loadedChannels = invalid then return
 
             content = CreateObject("roSGNode", "ContentNode")
-            m.channelPrograms = []
 
             for each ch in m.loadedChannels
                 item = content.CreateChild("ContentNode")
@@ -602,14 +600,6 @@
 
                 item.addField("url", "string", true)
                 item.url = url
-
-                if ch.programs <> invalid then
-                    m.channelPrograms.Push(ch.programs)
-                    print "DEBUG: stored programs for "; item.title; " count="; ch.programs.Count()
-                else
-                    m.channelPrograms.Push([])
-                    print "DEBUG: stored programs for "; item.title; " count=0"
-                end if
             end for
 
             m.channelList.content = content
@@ -618,7 +608,7 @@
             if firstChannel <> invalid then
                 print "DEBUG: first loaded channel ready"
                 playChannel(firstChannel)
-                updateGuideDisplayByIndex(0, firstChannel)
+                updateGuideDisplay(firstChannel)
             end if
         end sub
 
@@ -686,14 +676,13 @@
         end sub
 
         sub onChannelFocus()
-            idx = m.channelList.itemFocused
-            item = m.channelList.content.getChild(idx)
+            item = m.channelList.content.getChild(m.channelList.itemFocused)
             if item <> invalid then
                 m.infoTitle.text = item.title
                 m.infoMeta.text = "Loaded provider channel"
                 print "DEBUG: channel focus -> "; item.title
                 playChannel(item)
-                updateGuideDisplayByIndex(idx, item)
+                updateGuideDisplay(item)
             end if
         end sub
 
@@ -719,112 +708,31 @@
         sub setProgramTexts(a as String, b as String, c as String, d as String, e as String, f as String, g as String, h as String)
         end sub
 
-
-
-
-
-        sub setGuideBlock(rectId as String, labelId as String, x as Integer, y as Integer, w as Integer, title as String)
-            rect = m.top.findNode(rectId)
-            lbl = m.top.findNode(labelId)
-            if rect = invalid or lbl = invalid then return
-
-            rect.translation = [x, y]
-            rect.width = w
-            rect.height = 36
-
-            lbl.translation = [x + 12, y + 9]
-            lbl.width = w - 24
-            lbl.height = 18
-
-            if title = "" then
-                rect.color = "0x162a4f44"
-                lbl.text = ""
-            else
-                rect.color = "0x2d4f8fCC"
-                lbl.text = title
-            end if
-        end sub
-
-        sub clearGuideGrid()
-            m.top.findNode("rowLabel1").text = ""
-            m.top.findNode("rowLabel2").text = ""
-            m.top.findNode("rowLabel3").text = ""
-            m.top.findNode("rowLabel4").text = ""
-
-            setGuideBlock("p11", "p11t", 590, 433, 210, "")
-            setGuideBlock("p12", "p12t", 808, 433, 140, "")
-            setGuideBlock("p21", "p21t", 590, 487, 120, "")
-            setGuideBlock("p22", "p22t", 718, 487, 240, "")
-            setGuideBlock("p31", "p31t", 590, 541, 180, "")
-            setGuideBlock("p32", "p32t", 778, 541, 180, "")
-            setGuideBlock("p41", "p41t", 590, 595, 120, "")
-            setGuideBlock("p42", "p42t", 718, 595, 300, "")
-        end sub
-
-        function safeProgramTitle(prog as Object) as String
-            title = aaLookupString(prog, "title")
-            if title = "" then title = "Untitled Program"
-            return title
-        end function
-
-        function safeProgramStart(prog as Object) as String
-            startText = aaLookupString(prog, "start")
-            if startText = "" then startText = aaLookupString(prog, "startTime")
-            return startText
-        end function
-
-        sub updateGuideDisplayByIndex(idx as Integer, channel as Object)
+        sub updateGuideDisplay(channel as Object)
             guideText = ""
+
             if m.guideLabel = invalid then return
 
-            clearGuideGrid()
+            if channel = invalid or channel.programs = invalid or channel.programs.Count() = 0 then
+                guideText = "No guide data available"
+            else
+                count = channel.programs.Count()
+                maxPrograms = 5
+                if count < maxPrograms then maxPrograms = count
 
-            programs = []
-            if m.channelPrograms <> invalid and idx >= 0 and idx < m.channelPrograms.Count() then
-                programs = m.channelPrograms[idx]
+                for i = 0 to maxPrograms - 1
+                    prog = channel.programs[i]
+                    title = aaLookupString(prog, "title")
+                    time = aaLookupString(prog, "start")
+
+                    if i = 0 then
+                        guideText = guideText + "NOW: " + title + chr(10)
+                    else
+                        guideText = guideText + time + " - " + title + chr(10)
+                    end if
+                end for
             end if
 
-            progCount = 0
-            if programs <> invalid then progCount = programs.Count()
-
-            print "DEBUG: updateGuideDisplayByIndex idx="; idx; " title="; channel.title; " programs="; progCount
-
-            if programs = invalid or progCount = 0 then
-                m.infoMeta.text = "No guide data available"
-                m.guideLabel.text = "No guide data available"
-                return
-            end if
-
-            m.top.findNode("rowLabel1").text = "Now"
-            m.top.findNode("rowLabel2").text = "Next"
-            m.top.findNode("rowLabel3").text = "Later"
-            m.top.findNode("rowLabel4").text = "More"
-
-            maxPrograms = 8
-            if progCount < maxPrograms then maxPrograms = progCount
-
-            if maxPrograms >= 1 then setGuideBlock("p11", "p11t", 590, 433, 360, safeProgramTitle(programs[0]))
-            if maxPrograms >= 2 then setGuideBlock("p12", "p12t", 960, 433, 250, safeProgramTitle(programs[1]))
-            if maxPrograms >= 3 then setGuideBlock("p21", "p21t", 590, 487, 360, safeProgramTitle(programs[2]))
-            if maxPrograms >= 4 then setGuideBlock("p22", "p22t", 960, 487, 250, safeProgramTitle(programs[3]))
-            if maxPrograms >= 5 then setGuideBlock("p31", "p31t", 590, 541, 360, safeProgramTitle(programs[4]))
-            if maxPrograms >= 6 then setGuideBlock("p32", "p32t", 960, 541, 250, safeProgramTitle(programs[5]))
-            if maxPrograms >= 7 then setGuideBlock("p41", "p41t", 590, 595, 360, safeProgramTitle(programs[6]))
-            if maxPrograms >= 8 then setGuideBlock("p42", "p42t", 960, 595, 250, safeProgramTitle(programs[7]))
-
-            for i = 0 to maxPrograms - 1
-                prog = programs[i]
-                title = safeProgramTitle(prog)
-                time = safeProgramStart(prog)
-
-                if i = 0 then
-                    guideText = guideText + "NOW: " + title + chr(10)
-                else
-                    guideText = guideText + time + " - " + title + chr(10)
-                end if
-            end for
-
-            m.infoMeta.text = "Live TV Guide"
             m.guideLabel.text = guideText
         end sub
 
