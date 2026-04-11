@@ -18,6 +18,8 @@
         end sub
 
         sub run()
+            print "DEBUG: LoadChannelsTask run"
+
             m.top.responseJson = ""
             m.top.errorMessage = ""
 
@@ -31,11 +33,42 @@
                 forceRefresh: true
             }
 
+            body = FormatJson(payload)
+
             transfer = CreateObject("roUrlTransfer")
-            transfer.SetUrl(m.top.apiBase + "/api/channels")
+            port = CreateObject("roMessagePort")
+            transfer.SetMessagePort(port)
+            transfer.SetUrl(m.top.apiBase + "/api/channels-lite")
+            transfer.SetRequest("POST")
             transfer.AddHeader("Content-Type", "application/json")
 
-            response = transfer.PostFromString(FormatJson(payload))
+            ok = transfer.AsyncPostFromString(body)
+            if ok = false then
+                m.top.errorMessage = "Failed to start channels request."
+                return
+            end if
+
+            msg = wait(15000, port)
+            if msg = invalid then
+                m.top.errorMessage = "Timeout loading channels."
+                return
+            end if
+
+            if type(msg) <> "roUrlEvent" then
+                m.top.errorMessage = "Unexpected message type: " + type(msg)
+                return
+            end if
+
+            code = msg.GetResponseCode()
+            print "DEBUG: LoadChannelsTask response code = "; code
+
+            if code <> 200 then
+                m.top.errorMessage = "Channels request failed: " + code.ToStr()
+                return
+            end if
+
+            response = msg.GetString()
+            print "DEBUG: LoadChannelsTask response body len = "; Len(response)
 
             if response = invalid or response = "" then
                 m.top.errorMessage = "No channels returned."

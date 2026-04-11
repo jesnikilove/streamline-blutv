@@ -13,6 +13,7 @@
         end sub
 
         sub run()
+            print "DEBUG: ActivationCheckTask run"
             m.top.responseJson = ""
             m.top.errorMessage = ""
 
@@ -28,6 +29,7 @@
             transfer.SetUrl(apiBase + "/api/activate/" + deviceCode)
 
             response = transfer.GetToString()
+            print "DEBUG: ActivationCheckTask response len = "; Len(response)
 
             if response = invalid or response = "" then
                 m.top.errorMessage = "No response from server."

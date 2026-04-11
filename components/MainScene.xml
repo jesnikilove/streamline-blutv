@@ -51,13 +51,10 @@
             height="24"
             color="0xEEF4FFFF"
             font="font:MediumBoldSystemFont" />
-
         <LabelList
             id="categoryList"
             translation="[20,425]"
-            itemSize="[170,52]"
-            itemFocusedColor="0x3a86ffFF"
-            itemUnfocusedColor="0x223b73FF" />
+            itemSize="[170,52]" />
 
         <!-- Channel panel -->
         <Rectangle
@@ -73,13 +70,10 @@
             height="24"
             color="0xEEF4FFFF"
             font="font:MediumBoldSystemFont" />
-
         <LabelList
             id="channelList"
             translation="[200,425]"
-            itemSize="[220,52]"
-            itemFocusedColor="0x4f7fe6FF"
-            itemUnfocusedColor="0x223b73FF" />
+            itemSize="[220,52]" />
 
         <!-- Guide panel -->
         <Rectangle
@@ -195,21 +189,18 @@
                 <Button
                     id="activateButton"
                     translation="[250,455]"
-                    width="240"
                     height="58"
                     text="Activate on Web" />
 
                 <Button
                     id="refreshButton"
                     translation="[520,455]"
-                    width="240"
                     height="58"
                     text="Refresh" />
 
                 <Button
                     id="closeSetupButton"
                     translation="[790,455]"
-                    width="240"
                     height="58"
                     text="Close Setup" />
 
@@ -217,13 +208,13 @@
                 <Rectangle id="field1Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
                 <Rectangle id="field2Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
                 <Rectangle id="field3Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
-                <Button id="setupTypeButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="sourceButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="nicknameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="hostButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="usernameButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="passwordButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
-                <Button id="continueButton" translation="[0,0]" width="1" height="1" text="" visible="false" />
+                <Button id="setupTypeButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="sourceButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="nicknameButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="hostButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="usernameButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="passwordButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="continueButton" translation="[0,0]" height="1" text="" visible="false" />
             </children>
         </Group>
 
@@ -244,6 +235,7 @@
             m.activationTask = invalid
             m.loadChannelsTask = invalid
             m.isRefreshing = false
+            m.isLoadingChannels = false
             m.loadedChannels = invalid
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
@@ -257,6 +249,8 @@
             updateChannelsAndGuide("Movies")
         end sub
         sub onCloseSetup()
+            m.isRefreshing = false
+            m.isLoadingChannels = false
             m.setupOverlay.visible = false
             m.categoryList.setFocus(true)
         end sub
@@ -319,6 +313,7 @@
             m.setupStatus.text = "Go to your website and enter code " + m.top.findNode("deviceCodeValue").text
         end sub
         sub onRefreshPressed()
+            print "DEBUG: onRefreshPressed"
             if m.isRefreshing then
                 m.setupStatus.text = "Still checking activation..."
                 return
@@ -353,9 +348,11 @@
             m.activationTask.observeField("errorMessage", "onActivationTaskError")
         end sub
         sub onActivationTaskResponse()
+            print "DEBUG: onActivationTaskResponse"
             if m.activationTask = invalid then return
 
             response = m.activationTask.responseJson
+            print "DEBUG: activation response len = "; Len(response)
             if response = invalid or response = "" then return
 
             m.isRefreshing = false
@@ -367,6 +364,7 @@
             end if
 
             m.setupStatus.text = "Activated!"
+            m.isLoadingChannels = true
             startLoadingChannels(data.activation)
         end sub
 
@@ -391,6 +389,7 @@
         end sub
 
         sub startLoadingChannels(activation as Object)
+            print "DEBUG: startLoadingChannels"
             ensureLoadChannelsTask()
 
             m.setupStatus.text = "Loading channels..."
@@ -405,32 +404,48 @@
             m.loadChannelsTask.control = "RUN"
         end sub
 
-        sub onLoadChannelsTaskResponse()
+                sub onLoadChannelsTaskResponse()
+            print "DEBUG: onLoadChannelsTaskResponse"
             if m.loadChannelsTask = invalid then return
+            if m.isLoadingChannels = false then return
 
             raw = m.loadChannelsTask.responseJson
+            print "DEBUG: channels response len = "; Len(raw)
             if raw = invalid or raw = "" then return
 
             data = ParseJson(raw)
             if data = invalid or data.ok <> true or data.channels = invalid or data.channels.Count() = 0 then
+                m.isLoadingChannels = false
                 m.setupStatus.text = "No channels returned."
                 return
             end if
 
-            m.loadedChannels = data.channels
-            populateLoadedChannels()
+            ' TEMP DEBUG: only load the first channel so Roku does not choke
+            one = []
+            one.Push(data.channels[0])
 
-            m.setupStatus.text = "Channels loaded!"
+            print "DEBUG: before populateLoadedChannels"
+            m.loadedChannels = one
+            populateLoadedChannels()
+            print "DEBUG: after populateLoadedChannels"
+
+            m.isLoadingChannels = false
+            m.setupStatus.text = "Loaded 1 test channel."
             m.setupOverlay.visible = false
             m.channelList.setFocus(true)
+            print "DEBUG: finished onLoadChannelsTaskResponse"
         end sub
 
         sub onLoadChannelsTaskError()
+            print "DEBUG: onLoadChannelsTaskError"
             if m.loadChannelsTask = invalid then return
+            if m.isLoadingChannels = false then return
 
             err = m.loadChannelsTask.errorMessage
+            print "DEBUG: channels error = "; err
             if err = invalid or err = "" then return
 
+            m.isLoadingChannels = false
             m.setupStatus.text = err
         end sub
 
@@ -460,7 +475,7 @@
 
             firstChannel = m.channelList.content.getChild(0)
             if firstChannel <> invalid then
-                playChannel(firstChannel)
+                print "DEBUG: first channel ready but autoplay disabled for test"
             end if
         end sub
 
@@ -599,6 +614,7 @@
         end sub
 
         sub playChannel(channel as Object)
+            print "DEBUG: playChannel called for "; channel.title
             content = CreateObject("roSGNode", "ContentNode")
             content.url = channel.url
             content.streamformat = "hls"
