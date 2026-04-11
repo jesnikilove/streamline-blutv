@@ -487,7 +487,6 @@
             m.setupStatus.text = "Loaded first 25 channels."
             m.setupOverlay.visible = false
             m.setupStatus.text = ""
-            m.video.control = "stop"
             m.infoMeta.text = "Loaded provider channels"
             m.channelList.jumpToItem = 0
             m.channelList.setFocus(true)
@@ -595,6 +594,7 @@
             firstChannel = m.channelList.content.getChild(0)
             if firstChannel <> invalid then
                 print "DEBUG: first loaded channel ready"
+                playChannel(firstChannel)
             end if
         end sub
 
@@ -667,6 +667,7 @@
                 m.infoTitle.text = item.title
                 m.infoMeta.text = "Loaded provider channel"
                 print "DEBUG: channel focus -> "; item.title
+                playChannel(item)
             end if
         end sub
 
@@ -693,9 +694,23 @@
         end sub
 
         sub playChannel(channel as Object)
-            print "DEBUG: playChannel disabled for layout test -> "; channel.title
+            print "DEBUG: playChannel -> "; channel.title
+
+            if channel = invalid then return
+            if channel.url = invalid or channel.url = "" then
+                m.infoTitle.text = channel.title
+                m.infoMeta.text = "No stream URL available"
+                return
+            end if
+
+            content = CreateObject("roSGNode", "ContentNode")
+            content.url = channel.url
+            content.streamformat = "hls"
+            m.video.content = content
+            m.video.control = "play"
+
             m.infoTitle.text = channel.title
-            m.infoMeta.text = "Loaded provider channel"
+            m.infoMeta.text = "Playing live stream"
         end sub
     ]]></script>
 </component>
