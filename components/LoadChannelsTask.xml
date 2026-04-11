@@ -49,7 +49,7 @@
                 return
             end if
 
-            msg = wait(15000, port)
+            msg = wait(180000, port)
             if msg = invalid then
                 m.top.errorMessage = "Timeout loading channels."
                 return

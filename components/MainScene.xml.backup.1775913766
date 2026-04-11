@@ -421,7 +421,7 @@
 
             ' Load the first 25 real channels for Roku UI
             subset = []
-            maxCount = 10
+            maxCount = 25
             for i = 0 to data.channels.Count() - 1
                 if i >= maxCount then exit for
                 subset.Push(data.channels[i])
@@ -559,31 +559,111 @@
         end sub
 
         sub updateChannelsAndGuide(category as String)
-            print "DEBUG: updateChannelsAndGuide disabled for loaded-provider mode"
+            buildChannels(category)
+            buildGuide(category)
+
+            firstChannel = m.channelList.content.getChild(0)
+            if firstChannel <> invalid
+                playChannel(firstChannel)
+            end if
         end sub
 
         sub buildChannels(category as String)
-            print "DEBUG: buildChannels disabled"
+            content = CreateObject("roSGNode", "ContentNode")
+
+            if category = "Movies"
+                addChannel(content, "101  5 STARMAX")
+                addChannel(content, "102  ACTIONMAX")
+                addChannel(content, "103  MOVIES HD")
+                addChannel(content, "104  CINEMA PLUS")
+            else if category = "Sports"
+                addChannel(content, "201  ESPN")
+                addChannel(content, "202  beIN SPORTS")
+                addChannel(content, "203  SPORTS NET")
+                addChannel(content, "204  FOX SPORTS")
+            else if category = "News"
+                addChannel(content, "301  CNN")
+                addChannel(content, "302  FOX NEWS")
+                addChannel(content, "303  MSNBC")
+                addChannel(content, "304  NEWSMAX")
+            else
+                addChannel(content, "401  HALLMARK")
+                addChannel(content, "402  LIFETIME")
+                addChannel(content, "403  TLC")
+                addChannel(content, "404  FAMILY TV")
+            end if
+
+            m.channelList.content = content
         end sub
 
         sub addChannel(parent as Object, title as String)
-            print "DEBUG: addChannel disabled"
+            item = parent.CreateChild("ContentNode")
+            item.title = title
+            item.addField("url", "string", true)
+            item.url = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
         end sub
 
         sub buildGuide(category as String)
-            print "DEBUG: buildGuide disabled"
+            color = "0x7b5d88FF"
+            if category = "Sports"
+                color = "0x356b8cFF"
+            else if category = "News"
+                color = "0x2e4f8fFF"
+            else if category = "Family"
+                color = "0x4f7a5aFF"
+            end if
+
+            m.top.findNode("p11").color = color
+            m.top.findNode("p12").color = color
+            m.top.findNode("p21").color = color
+            m.top.findNode("p22").color = color
+            m.top.findNode("p31").color = color
+            m.top.findNode("p32").color = color
+            m.top.findNode("p41").color = color
+            m.top.findNode("p42").color = color
+
+            if category = "Movies"
+                setRowLabels("5 STARMAX", "ACTIONMAX", "MOVIES HD", "CINEMA PLUS")
+                setProgramTexts("A Hard Day's Night", "Margaret", "The 33", "Movie Feature", "Classic Film", "Drama Hour", "Indie", "Saturday Feature")
+            else if category = "Sports"
+                setRowLabels("ESPN", "beIN SPORTS", "SPORTS NET", "FOX SPORTS")
+                setProgramTexts("SportsCenter", "Live Match", "Tennis", "Postgame", "Golf Hour", "Live Soccer", "Boxing", "Highlights")
+            else if category = "News"
+                setRowLabels("CNN", "FOX NEWS", "MSNBC", "NEWSMAX")
+                setProgramTexts("Noon News", "Update", "Politics", "News Block", "World Report", "Panel", "Markets", "Evening Lead")
+            else
+                setRowLabels("HALLMARK", "LIFETIME", "TLC", "FAMILY TV")
+                setProgramTexts("Family Hour", "Movie", "Reality", "Lifestyle", "Cartoon Time", "Home Show", "Cooking", "Weekend Special")
+            end if
         end sub
 
         sub setRowLabels(a as String, b as String, c as String, d as String)
+            m.top.findNode("rowLabel1").text = a
+            m.top.findNode("rowLabel2").text = b
+            m.top.findNode("rowLabel3").text = c
+            m.top.findNode("rowLabel4").text = d
         end sub
 
         sub setProgramTexts(a as String, b as String, c as String, d as String, e as String, f as String, g as String, h as String)
+            m.top.findNode("p11t").text = a
+            m.top.findNode("p12t").text = b
+            m.top.findNode("p21t").text = c
+            m.top.findNode("p22t").text = d
+            m.top.findNode("p31t").text = e
+            m.top.findNode("p32t").text = f
+            m.top.findNode("p41t").text = g
+            m.top.findNode("p42t").text = h
         end sub
 
         sub playChannel(channel as Object)
-            print "DEBUG: playChannel disabled for layout test -> "; channel.title
+            print "DEBUG: playChannel called for "; channel.title
+            content = CreateObject("roSGNode", "ContentNode")
+            content.url = channel.url
+            content.streamformat = "hls"
+            m.video.content = content
+            m.video.control = "play"
             m.infoTitle.text = channel.title
-            m.infoMeta.text = "Loaded provider channel"
+            m.infoMeta.text = "Live stream • StreamLine BluTV"
         end sub
     ]]></script>
 </component>
