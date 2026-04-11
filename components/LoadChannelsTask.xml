@@ -9,6 +9,8 @@
         <field id="m3uUrl" type="string" />
         <field id="epgUrl" type="string" />
         <field id="forceRefresh" type="boolean" />
+        <field id="offset" type="integer" />
+        <field id="limit" type="integer" />
         <field id="responseJson" type="string" alwaysNotify="true" />
         <field id="errorMessage" type="string" alwaysNotify="true" />
     </interface>
@@ -32,6 +34,8 @@
     m3uUrl: m.top.m3uUrl
     epgUrl: m.top.epgUrl
     forceRefresh: m.top.forceRefresh
+    offset: m.top.offset
+    limit: m.top.limit
     nickname: "ForceRefreshFix"
 }
 
