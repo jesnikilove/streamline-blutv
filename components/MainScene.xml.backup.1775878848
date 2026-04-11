@@ -419,26 +419,21 @@
                 return
             end if
 
-            ' Load the first 25 real channels for Roku UI
-            subset = []
-            maxCount = 25
-            for i = 0 to data.channels.Count() - 1
-                if i >= maxCount then exit for
-                subset.Push(data.channels[i])
-            end for
+            ' TEMP DEBUG: only load the first channel so Roku does not choke
+            one = []
+            one.Push(data.channels[0])
 
             print "DEBUG: before populateLoadedChannels"
-            m.loadedChannels = subset
+            m.loadedChannels = one
             populateLoadedChannels()
             print "DEBUG: after populateLoadedChannels"
             clearDemoGuideForLoadedChannels()
 
             m.isLoadingChannels = false
-            m.setupStatus.text = "Loaded first 25 channels."
+            m.setupStatus.text = "Channels loaded."
             m.setupOverlay.visible = false
             m.video.control = "stop"
             m.infoMeta.text = "Loaded provider channels"
-            m.channelList.jumpToItem = 0
             m.channelList.setFocus(true)
             print "DEBUG: finished onLoadChannelsTaskResponse"
         end sub

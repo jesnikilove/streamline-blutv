@@ -24,14 +24,15 @@
             m.top.errorMessage = ""
 
             payload = {
-                setupType: m.top.setupType
-                host: m.top.host
-                username: m.top.username
-                password: m.top.password
-                m3uUrl: m.top.m3uUrl
-                epgUrl: m.top.epgUrl
-                forceRefresh: true
-            }
+    setupType: m.top.setupType
+    host: m.top.host
+    username: m.top.username
+    password: m.top.password
+    m3uUrl: m.top.m3uUrl
+    epgUrl: m.top.epgUrl
+    forceRefresh: true
+    nickname: "ForceRefreshFix"
+}
 
             body = FormatJson(payload)
 
