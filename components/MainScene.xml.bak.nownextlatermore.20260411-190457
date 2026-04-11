@@ -767,67 +767,10 @@
             return title
         end function
 
-        function pad2(n as Integer) as String
-            if n < 10 then return "0" + n.ToStr()
-            return n.ToStr()
-        end function
-
-        function formatMinutesAsClock(total as Integer) as String
-            while total < 0
-                total = total + 1440
-            end while
-            total = total mod 1440
-
-            hour24 = Int(total / 60)
-            minute = total mod 60
-
-            suffix = "AM"
-            if hour24 >= 12 then suffix = "PM"
-
-            hour12 = hour24 mod 12
-            if hour12 = 0 then hour12 = 12
-
-            return hour12.ToStr() + ":" + pad2(minute) + " " + suffix
-        end function
-
-        function parseProgramStartToLocalDisplay(raw as String) as String
-            if raw = invalid or raw = "" then return ""
-
-            if Instr(1, raw, "T") > 0 then
-                parts = raw.Tokenize("T")
-                if parts.Count() < 2 then return raw
-
-                timePart = parts[1]
-
-                zPos = Instr(1, timePart, "Z")
-                if zPos > 0 then timePart = Left(timePart, zPos - 1)
-
-                plusPos = Instr(1, timePart, "+")
-                if plusPos > 0 then timePart = Left(timePart, plusPos - 1)
-
-                if Len(timePart) > 8 then timePart = Left(timePart, 8)
-
-                hm = timePart.Tokenize(":")
-                if hm.Count() < 2 then return raw
-
-                hour = Val(hm[0])
-                minute = Val(hm[1])
-
-                total = (hour * 60) + minute
-
-                ' Eastern Daylight Time
-                total = total - 240
-
-                return formatMinutesAsClock(total)
-            end if
-
-            return raw
-        end function
-
         function safeProgramStart(prog as Object) as String
             startText = aaLookupString(prog, "start")
             if startText = "" then startText = aaLookupString(prog, "startTime")
-            return parseProgramStartToLocalDisplay(startText)
+            return startText
         end function
 
         sub updateGuideDisplayByIndex(idx as Integer, channel as Object)
@@ -852,43 +795,22 @@
                 return
             end if
 
-            row1 = "Now"
-            row2 = "Next"
-            row3 = "Later"
-            row4 = "More"
-
-            if progCount >= 2 then row2 = "Next  " + safeProgramStart(programs[1])
-            if progCount >= 3 then row3 = "Later  " + safeProgramStart(programs[2])
-            if progCount >= 4 then row4 = "More  " + safeProgramStart(programs[3])
-
-            m.top.findNode("rowLabel1").text = row1
-            m.top.findNode("rowLabel2").text = row2
-            m.top.findNode("rowLabel3").text = row3
-            m.top.findNode("rowLabel4").text = row4
-
-            if progCount >= 1 then setGuideBlock("p11", "p11t", 590, 433, 420, safeProgramTitle(programs[0]))
-            setGuideBlock("p12", "p12t", 1018, 433, 4, "")
-
-            if progCount >= 2 then setGuideBlock("p21", "p21t", 590, 487, 420, safeProgramTitle(programs[1]))
-            setGuideBlock("p22", "p22t", 1018, 487, 4, "")
-
-            if progCount >= 3 then setGuideBlock("p31", "p31t", 590, 541, 420, safeProgramTitle(programs[2]))
-            setGuideBlock("p32", "p32t", 1018, 541, 4, "")
-
-            if progCount >= 4 then
-                setGuideBlock("p41", "p41t", 590, 595, 330, safeProgramTitle(programs[3]))
-                if progCount > 4 then
-                    setGuideBlock("p42", "p42t", 928, 595, 150, "More…")
-                else
-                    setGuideBlock("p42", "p42t", 928, 595, 4, "")
-                end if
-            else
-                setGuideBlock("p41", "p41t", 590, 595, 4, "")
-                setGuideBlock("p42", "p42t", 928, 595, 4, "")
-            end if
+            m.top.findNode("rowLabel1").text = "Now"
+            m.top.findNode("rowLabel2").text = "Next"
+            m.top.findNode("rowLabel3").text = "Later"
+            m.top.findNode("rowLabel4").text = "More"
 
             maxPrograms = 8
             if progCount < maxPrograms then maxPrograms = progCount
+
+            if maxPrograms >= 1 then setGuideBlock("p11", "p11t", 590, 433, 360, safeProgramTitle(programs[0]))
+            if maxPrograms >= 2 then setGuideBlock("p12", "p12t", 960, 433, 250, safeProgramTitle(programs[1]))
+            if maxPrograms >= 3 then setGuideBlock("p21", "p21t", 590, 487, 360, safeProgramTitle(programs[2]))
+            if maxPrograms >= 4 then setGuideBlock("p22", "p22t", 960, 487, 250, safeProgramTitle(programs[3]))
+            if maxPrograms >= 5 then setGuideBlock("p31", "p31t", 590, 541, 360, safeProgramTitle(programs[4]))
+            if maxPrograms >= 6 then setGuideBlock("p32", "p32t", 960, 541, 250, safeProgramTitle(programs[5]))
+            if maxPrograms >= 7 then setGuideBlock("p41", "p41t", 590, 595, 360, safeProgramTitle(programs[6]))
+            if maxPrograms >= 8 then setGuideBlock("p42", "p42t", 960, 595, 250, safeProgramTitle(programs[7]))
 
             for i = 0 to maxPrograms - 1
                 prog = programs[i]
