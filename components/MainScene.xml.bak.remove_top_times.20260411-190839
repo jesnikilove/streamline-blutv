@@ -95,7 +95,15 @@
             color="0x162a4fFF" />
 
         <!-- Time header -->
+        <Rectangle translation="[430,375]" width="840" height="50" color="0x1a2f57FF" />
 
+        <Label text="12:00 PM" translation="[450,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="12:30 PM" translation="[570,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="1:00 PM"  translation="[690,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="1:30 PM"  translation="[810,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="2:00 PM"  translation="[930,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="2:30 PM"  translation="[1050,390]" width="110" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
+        <Label text="3:00 PM"  translation="[1170,390]" width="80" height="20" color="0xEEF4FFFF" font="font:SmallSystemFont" />
 
         <!-- Soft row lines -->
         <Rectangle translation="[430,425]" width="840" height="2" color="0x223b73AA" />
