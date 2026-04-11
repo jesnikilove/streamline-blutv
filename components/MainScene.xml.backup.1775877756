@@ -246,6 +246,7 @@
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
 
             m.top.findNode("activateButton").setFocus(true)
+            updateChannelsAndGuide("Movies")
         end sub
         sub onCloseSetup()
             m.isRefreshing = false
@@ -431,7 +432,6 @@
             m.isLoadingChannels = false
             m.setupStatus.text = "Loaded 1 test channel."
             m.setupOverlay.visible = false
-            m.video.control = "stop"
             m.channelList.setFocus(true)
             print "DEBUG: finished onLoadChannelsTaskResponse"
         end sub
@@ -475,7 +475,7 @@
 
             firstChannel = m.channelList.content.getChild(0)
             if firstChannel <> invalid then
-                print "DEBUG: first loaded channel ready"
+                print "DEBUG: first channel ready but autoplay disabled for test"
             end if
         end sub
 
@@ -503,11 +503,6 @@
         end sub
 
         sub onCategoryFocus()
-            if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
-                print "DEBUG: category focus ignored because loaded channels are active"
-                return
-            end if
-
             item = m.categoryList.content.getChild(m.categoryList.itemFocused)
             if item <> invalid
                 updateChannelsAndGuide(item.title)
@@ -516,10 +511,8 @@
 
         sub onChannelFocus()
             item = m.channelList.content.getChild(m.channelList.itemFocused)
-            if item <> invalid then
-                m.infoTitle.text = item.title
-                m.infoMeta.text = "Loaded channel selected"
-                print "DEBUG: channel focus -> "; item.title
+            if item <> invalid
+                playChannel(item)
             end if
         end sub
 
