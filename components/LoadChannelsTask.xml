@@ -8,6 +8,7 @@
         <field id="password" type="string" />
         <field id="m3uUrl" type="string" />
         <field id="epgUrl" type="string" />
+        <field id="forceRefresh" type="boolean" />
         <field id="responseJson" type="string" alwaysNotify="true" />
         <field id="errorMessage" type="string" alwaysNotify="true" />
     </interface>
@@ -30,7 +31,7 @@
     password: m.top.password
     m3uUrl: m.top.m3uUrl
     epgUrl: m.top.epgUrl
-    forceRefresh: true
+    forceRefresh: m.top.forceRefresh
     nickname: "ForceRefreshFix"
 }
 

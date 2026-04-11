@@ -101,34 +101,34 @@
         <Rectangle translation="[430,641]" width="840" height="2" color="0x223b73AA" />
 
         <!-- Row labels inside guide -->
-        <Label id="rowLabel1" text="Movies 1" translation="[446,438]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
-        <Label id="rowLabel2" text="Movies 2" translation="[446,492]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
-        <Label id="rowLabel3" text="Movies 3" translation="[446,546]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
-        <Label id="rowLabel4" text="Movies 4" translation="[446,600]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel1" text="" translation="[446,438]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel2" text="" translation="[446,492]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel3" text="" translation="[446,546]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel4" text="" translation="[446,600]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 1 -->
-        <Rectangle id="p11" translation="[590,433]" width="210" height="36" color="0x7b5d88FF" />
-        <Label id="p11t" text="A Hard Day's Night" translation="[602,442]" width="186" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-        <Rectangle id="p12" translation="[808,433]" width="140" height="36" color="0x7b5d88FF" />
-        <Label id="p12t" text="Margaret" translation="[820,442]" width="116" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p11" translation="[590,433]" width="210" height="36" color="0x162a4f44" />
+        <Label id="p11t" text="" translation="[602,442]" width="186" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p12" translation="[808,433]" width="140" height="36" color="0x162a4f44" />
+        <Label id="p12t" text="" translation="[820,442]" width="116" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 2 -->
-        <Rectangle id="p21" translation="[590,487]" width="120" height="36" color="0x7b5d88FF" />
-        <Label id="p21t" text="The 33" translation="[602,496]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-        <Rectangle id="p22" translation="[718,487]" width="240" height="36" color="0x7b5d88FF" />
-        <Label id="p22t" text="Movie Feature" translation="[730,496]" width="216" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p21" translation="[590,487]" width="120" height="36" color="0x162a4f44" />
+        <Label id="p21t" text="" translation="[602,496]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p22" translation="[718,487]" width="240" height="36" color="0x162a4f44" />
+        <Label id="p22t" text="" translation="[730,496]" width="216" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 3 -->
-        <Rectangle id="p31" translation="[590,541]" width="180" height="36" color="0x7b5d88FF" />
-        <Label id="p31t" text="Classic Film" translation="[602,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-        <Rectangle id="p32" translation="[778,541]" width="180" height="36" color="0x7b5d88FF" />
-        <Label id="p32t" text="Drama Hour" translation="[790,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p31" translation="[590,541]" width="180" height="36" color="0x162a4f44" />
+        <Label id="p31t" text="" translation="[602,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p32" translation="[778,541]" width="180" height="36" color="0x162a4f44" />
+        <Label id="p32t" text="" translation="[790,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- Program blocks row 4 -->
-        <Rectangle id="p41" translation="[590,595]" width="120" height="36" color="0x7b5d88FF" />
-        <Label id="p41t" text="Indie" translation="[602,604]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
-        <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x7b5d88FF" />
-        <Label id="p42t" text="Saturday Feature" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p41" translation="[590,595]" width="120" height="36" color="0x162a4f44" />
+        <Label id="p41t" text="" translation="[602,604]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x162a4f44" />
+        <Label id="p42t" text="" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
 
         <!-- SAFE SETUP OVERLAY -->
         
@@ -241,6 +241,8 @@
                 m.progressTimer.control = "stop"
             end if
             m.loadedChannels = invalid
+            m.lastActivation = invalid
+            m.bgRefreshTask = invalid
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
             m.channelList.observeField("itemFocused", "onChannelFocus")
@@ -250,11 +252,22 @@
             m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
 
             m.top.findNode("activateButton").setFocus(true)
+
+            ' AUTO START ACTIVATION CHECK
+            m.setupOverlay.visible = false
+
+            ensureActivationTask()
+            m.isRefreshing = true
+            m.setupStatus.text = "Checking activation..."
+            m.activationTask.apiBase = m.apiBase
+            m.activationTask.deviceCode = m.deviceCode
+            m.activationTask.control = "RUN"
         end sub
         sub onCloseSetup()
             m.isRefreshing = false
             m.isLoadingChannels = false
             m.setupOverlay.visible = false
+            m.setupStatus.text = ""
             m.categoryList.setFocus(true)
         end sub
 
@@ -327,6 +340,10 @@
             m.isRefreshing = true
             m.setupStatus.text = "Checking activation..."
 
+            if m.progressTimer <> invalid then
+                m.progressTimer.control = "stop"
+            end if
+
             m.activationTask.apiBase = m.apiBase
             m.activationTask.deviceCode = m.deviceCode
             m.activationTask.control = "RUN"
@@ -367,6 +384,7 @@
             end if
 
             m.setupStatus.text = "Activated!"
+            m.lastActivation = data.activation
             m.isLoadingChannels = true
             startLoadingChannels(data.activation)
         end sub
@@ -415,7 +433,7 @@
             print "DEBUG: startLoadingChannels"
             ensureLoadChannelsTask()
 
-            m.setupStatus.text = "Connecting to provider..."
+            m.setupStatus.text = "Loading cached channels..."
 
             m.progressTimer = CreateObject("roSGNode", "Timer")
             m.progressTimer.duration = 2
@@ -431,6 +449,7 @@
             m.loadChannelsTask.password = aaLookupString(activation, "password")
             m.loadChannelsTask.m3uUrl = aaLookupString(activation, "playlistUrl")
             m.loadChannelsTask.epgUrl = aaLookupString(activation, "epgUrl")
+            m.loadChannelsTask.forceRefresh = false
             m.loadChannelsTask.control = "RUN"
         end sub
 
@@ -452,7 +471,7 @@
 
             ' Load the first 25 real channels for Roku UI
             subset = []
-            maxCount = 10
+            maxCount = 5000
             for i = 0 to data.channels.Count() - 1
                 if i >= maxCount then exit for
                 subset.Push(data.channels[i])
@@ -467,11 +486,73 @@
             m.isLoadingChannels = false
             m.setupStatus.text = "Loaded first 25 channels."
             m.setupOverlay.visible = false
+            m.setupStatus.text = ""
             m.video.control = "stop"
             m.infoMeta.text = "Loaded provider channels"
             m.channelList.jumpToItem = 0
             m.channelList.setFocus(true)
             print "DEBUG: finished onLoadChannelsTaskResponse"
+
+            if m.lastActivation <> invalid then
+                startBackgroundRefresh(m.lastActivation)
+            end if
+        end sub
+
+
+        sub startBackgroundRefresh(activation as Object)
+            if activation = invalid then return
+            if m.bgRefreshTask <> invalid then return
+
+            print "DEBUG: startBackgroundRefresh"
+            m.bgRefreshTask = CreateObject("roSGNode", "LoadChannelsTask")
+            m.bgRefreshTask.observeField("responseJson", "onBackgroundRefreshResponse")
+            m.bgRefreshTask.observeField("errorMessage", "onBackgroundRefreshError")
+
+            m.bgRefreshTask.apiBase = m.apiBase
+            m.bgRefreshTask.setupType = aaLookupString(activation, "setupType")
+            m.bgRefreshTask.host = aaLookupString(activation, "serverUrl")
+            m.bgRefreshTask.username = aaLookupString(activation, "username")
+            m.bgRefreshTask.password = aaLookupString(activation, "password")
+            m.bgRefreshTask.m3uUrl = aaLookupString(activation, "playlistUrl")
+            m.bgRefreshTask.epgUrl = aaLookupString(activation, "epgUrl")
+            m.bgRefreshTask.forceRefresh = true
+            m.bgRefreshTask.control = "RUN"
+        end sub
+
+        sub onBackgroundRefreshResponse()
+            if m.bgRefreshTask = invalid then return
+
+            raw = m.bgRefreshTask.responseJson
+            if raw = invalid or raw = "" then return
+
+            print "DEBUG: onBackgroundRefreshResponse len = "; Len(raw)
+
+            data = ParseJson(raw)
+            if data = invalid or data.ok <> true or data.channels = invalid or data.channels.Count() = 0 then
+                m.bgRefreshTask = invalid
+                return
+            end if
+
+            subset = []
+            maxCount = 5000
+            for i = 0 to data.channels.Count() - 1
+                if i >= maxCount then exit for
+                subset.Push(data.channels[i])
+            end for
+
+            m.loadedChannels = subset
+            populateLoadedChannels()
+            clearDemoGuideForLoadedChannels()
+            m.infoMeta.text = "Channels refreshed in background"
+            m.bgRefreshTask = invalid
+        end sub
+
+        sub onBackgroundRefreshError()
+            if m.bgRefreshTask = invalid then return
+
+            err = m.bgRefreshTask.errorMessage
+            print "DEBUG: background refresh error = "; err
+            m.bgRefreshTask = invalid
         end sub
 
         sub onLoadChannelsTaskError()
