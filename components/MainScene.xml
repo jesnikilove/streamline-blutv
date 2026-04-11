@@ -236,6 +236,10 @@
             m.loadChannelsTask = invalid
             m.isRefreshing = false
             m.isLoadingChannels = false
+
+            if m.progressTimer <> invalid then
+                m.progressTimer.control = "stop"
+            end if
             m.loadedChannels = invalid
             buildCategories()
             m.categoryList.observeField("itemFocused", "onCategoryFocus")
@@ -387,11 +391,38 @@
             m.loadChannelsTask.observeField("errorMessage", "onLoadChannelsTaskError")
         end sub
 
+        
+
+        sub onProgressTick()
+            if m.progressTimer = invalid then return
+
+            m.progressStep = m.progressStep + 1
+
+            if m.progressStep = 1 then
+                m.setupStatus.text = "Connecting to provider..."
+            else if m.progressStep = 2 then
+                m.setupStatus.text = "Downloading playlist..."
+            else if m.progressStep = 3 then
+                m.setupStatus.text = "Parsing channels..."
+            else if m.progressStep = 4 then
+                m.setupStatus.text = "Almost done..."
+            else if m.progressStep > 5 then
+                m.progressStep = 2
+            end if
+        end sub
+
         sub startLoadingChannels(activation as Object)
             print "DEBUG: startLoadingChannels"
             ensureLoadChannelsTask()
 
-            m.setupStatus.text = "Loading channels..."
+            m.setupStatus.text = "Connecting to provider..."
+
+            m.progressTimer = CreateObject("roSGNode", "Timer")
+            m.progressTimer.duration = 2
+            m.progressTimer.repeat = true
+            m.progressTimer.observeField("fire", "onProgressTick")
+            m.progressStep = 0
+            m.progressTimer.control = "start"
 
             m.loadChannelsTask.apiBase = m.apiBase
             m.loadChannelsTask.setupType = aaLookupString(activation, "setupType")
