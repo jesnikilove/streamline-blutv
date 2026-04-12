@@ -822,44 +822,6 @@
             return startText
         end function
 
-        function currentLocalMinutes() as Integer
-            dt = CreateObject("roDateTime")
-            total = (dt.GetHours() * 60) + dt.GetMinutes()
-
-            ' Roku appears to be reporting UTC here; convert to Eastern Daylight Time
-            total = total - 240
-
-            while total < 0
-                total = total + 1440
-            end while
-            total = total mod 1440
-
-            return total
-        end function
-
-        function visibleProgramStartIndex(programs as Object) as Integer
-            if programs = invalid or programs.Count() = 0 then return 0
-
-            nowMins = currentLocalMinutes()
-            best = 0
-
-            for i = 0 to programs.Count() - 1
-                p = programs[i]
-                startMins = p.Lookup("startMinutesLocal")
-                if startMins = invalid then
-                    startMins = -1
-                end if
-
-                if startMins >= 0 and startMins <= nowMins then
-                    best = i
-                else if startMins > nowMins then
-                    exit for
-                end if
-            end for
-
-            return best
-        end function
-
         sub updateGuideDisplayByIndex(idx as Integer, channel as Object)
             guideText = ""
             if m.guideLabel = invalid then return
@@ -882,42 +844,32 @@
                 return
             end if
 
-            startIdx = visibleProgramStartIndex(programs)
-
-            visible = []
-            for vi = startIdx to progCount - 1
-                visible.Push(programs[vi])
-                if visible.Count() >= 4 then exit for
-            end for
-
-            visCount = visible.Count()
-
             row1 = ""
             row2 = ""
             row3 = ""
             row4 = ""
 
-            if visCount >= 1 then row1 = safeProgramStart(visible[0])
-            if visCount >= 2 then row2 = safeProgramStart(visible[1])
-            if visCount >= 3 then row3 = safeProgramStart(visible[2])
-            if visCount >= 4 then row4 = safeProgramStart(visible[3])
+            if progCount >= 1 then row1 = safeProgramStart(programs[0])
+            if progCount >= 2 then row2 = safeProgramStart(programs[1])
+            if progCount >= 3 then row3 = safeProgramStart(programs[2])
+            if progCount >= 4 then row4 = safeProgramStart(programs[3])
 
             m.top.findNode("rowLabel1").text = row1
             m.top.findNode("rowLabel2").text = row2
             m.top.findNode("rowLabel3").text = row3
             m.top.findNode("rowLabel4").text = row4
 
-            if visCount >= 1 then setGuideBlock("p11", "p11t", 590, 433, 420, safeProgramTitle(visible[0])) else setGuideBlock("p11", "p11t", 590, 433, 4, "")
+            if progCount >= 1 then setGuideBlock("p11", "p11t", 590, 433, 420, safeProgramTitle(programs[0]))
             setGuideBlock("p12", "p12t", 1018, 433, 4, "")
 
-            if visCount >= 2 then setGuideBlock("p21", "p21t", 590, 487, 420, safeProgramTitle(visible[1])) else setGuideBlock("p21", "p21t", 590, 487, 4, "")
+            if progCount >= 2 then setGuideBlock("p21", "p21t", 590, 487, 420, safeProgramTitle(programs[1]))
             setGuideBlock("p22", "p22t", 1018, 487, 4, "")
 
-            if visCount >= 3 then setGuideBlock("p31", "p31t", 590, 541, 420, safeProgramTitle(visible[2])) else setGuideBlock("p31", "p31t", 590, 541, 4, "")
+            if progCount >= 3 then setGuideBlock("p31", "p31t", 590, 541, 420, safeProgramTitle(programs[2]))
             setGuideBlock("p32", "p32t", 1018, 541, 4, "")
 
-            if visCount >= 4 then
-                setGuideBlock("p41", "p41t", 590, 595, 420, safeProgramTitle(visible[3]))
+            if progCount >= 4 then
+                setGuideBlock("p41", "p41t", 590, 595, 420, safeProgramTitle(programs[3]))
                 setGuideBlock("p42", "p42t", 1018, 595, 4, "")
             else
                 setGuideBlock("p41", "p41t", 590, 595, 4, "")
@@ -925,10 +877,10 @@
             end if
 
             maxPrograms = 8
-            if visCount < maxPrograms then maxPrograms = visCount
+            if progCount < maxPrograms then maxPrograms = progCount
 
             for i = 0 to maxPrograms - 1
-                prog = visible[i]
+                prog = programs[i]
                 title = safeProgramTitle(prog)
                 time = safeProgramStart(prog)
 
