@@ -244,8 +244,6 @@
             m.channelPrograms = []
             m.filteredChannels = []
             m.selectedCategory = "All"
-            m.pendingCategory = "All"
-            m.favoriteMap = invalid
 
             if m.progressTimer <> invalid then
                 m.progressTimer.control = "stop"
@@ -334,24 +332,6 @@
                 end if
 
                 return false
-            end if
-
-            if key = "OK" or key = "select" then
-                if m.categoryList <> invalid and m.categoryList.hasFocus() then
-                    item = m.categoryList.content.getChild(m.categoryList.itemFocused)
-                    if item <> invalid then
-                        applyCategoryFilter(item.title)
-                        m.channelList.setFocus(true)
-                        return true
-                    end if
-                end if
-            end if
-
-            if key = "options" then
-                if m.channelList <> invalid and m.channelList.hasFocus() then
-                    toggleFavoriteByIndex(m.channelList.itemFocused)
-                    return true
-                end if
             end if
 
             if key = "right" then
@@ -657,75 +637,7 @@
         sub buildCategories()
             content = CreateObject("roSGNode", "ContentNode")
             addListItem(content, "All")
-            addListItem(content, "Favorites")
             m.categoryList.content = content
-        end sub
-
-        function getFavoritesSection() as Object
-            sec = CreateObject("roRegistrySection", "StreamLineBluTV")
-            return sec
-        end function
-
-        function loadFavoriteMap() as Object
-            sec = getFavoritesSection()
-            aa = CreateObject("roAssociativeArray")
-            keys = sec.GetKeyList()
-            if keys <> invalid then
-                for each k in keys
-                    aa[k] = true
-                end for
-            end if
-            return aa
-        end function
-
-        function channelFavoriteKey(ch as Object) as String
-            if ch = invalid then return ""
-            key = aaLookupString(ch, "streamUrl")
-            if key = "" then key = aaLookupString(ch, "name")
-            if key = "" then key = aaLookupString(ch, "number")
-            return key
-        end function
-
-        function isFavoriteChannel(ch as Object) as Boolean
-            if m.favoriteMap = invalid then m.favoriteMap = loadFavoriteMap()
-            key = channelFavoriteKey(ch)
-            if key = "" then return false
-            return m.favoriteMap.Lookup(key) <> invalid
-        end function
-
-        sub toggleFavoriteByIndex(idx as Integer)
-            if m.filteredChannels = invalid then return
-            if idx < 0 or idx >= m.filteredChannels.Count() then return
-
-            if m.favoriteMap = invalid then m.favoriteMap = loadFavoriteMap()
-
-            ch = m.filteredChannels[idx]
-            key = channelFavoriteKey(ch)
-            if key = "" then return
-
-            sec = getFavoritesSection()
-
-            if m.favoriteMap.Lookup(key) <> invalid then
-                sec.Delete(key)
-                m.favoriteMap.Delete(key)
-                m.infoMeta.text = "Removed from Favorites"
-            else
-                sec.Write(key, "1")
-                sec.Flush()
-                m.favoriteMap[key] = true
-                m.infoMeta.text = "Added to Favorites"
-            end if
-
-            ' If currently viewing Favorites, refresh the filtered list
-            if m.selectedCategory = "Favorites" then
-                applyCategoryFilter("Favorites")
-            else
-                ' refresh current channel title decoration if desired later
-                item = m.channelList.content.getChild(idx)
-                if item <> invalid then
-                    updateGuideDisplayByIndex(idx, item)
-                end if
-            end if
         end sub
 
         function lookupCategoryName(ch as Object) as String
@@ -749,7 +661,6 @@
         sub rebuildCategoriesFromLoadedChannels()
             content = CreateObject("roSGNode", "ContentNode")
             addListItem(content, "All")
-            addListItem(content, "Favorites")
 
             seen = CreateObject("roAssociativeArray")
 
@@ -766,7 +677,6 @@
             m.categoryList.content = content
             m.categoryList.jumpToItem = 0
             m.selectedCategory = "All"
-            m.pendingCategory = "All"
         end sub
 
         sub applyCategoryFilter(category as String)
@@ -774,9 +684,12 @@
 
             if category = invalid or category = "" then category = "All"
 
-            if m.favoriteMap = invalid then m.favoriteMap = loadFavoriteMap()
+            ' Prevent reapplying the same category over and over while focused
+            if m.selectedCategory = category and m.channelList.content <> invalid and m.channelList.content.getChildCount() > 0 then
+                return
+            end if
+
             m.selectedCategory = category
-            m.pendingCategory = category
 
             filtered = []
             for each ch in m.loadedChannels
@@ -784,8 +697,6 @@
 
                 if category = "All" then
                     filtered.Push(ch)
-                else if category = "Favorites" then
-                    if isFavoriteChannel(ch) then filtered.Push(ch)
                 else if cat = category then
                     filtered.Push(ch)
                 end if
@@ -807,10 +718,6 @@
                     item.title = num + "  " + nm
                 else
                     item.title = nm
-                end if
-
-                if isFavoriteChannel(ch) then
-                    item.title = "★ " + item.title
                 end if
 
                 item.addField("url", "string", true)
@@ -846,7 +753,13 @@
             item = m.categoryList.content.getChild(m.categoryList.itemFocused)
             if item <> invalid then
                 print "DEBUG: category focus -> "; item.title
-                m.pendingCategory = item.title
+                if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
+                    if item.title <> m.selectedCategory or m.channelList.content = invalid or m.channelList.content.getChildCount() = 0 then
+                        applyCategoryFilter(item.title)
+                    end if
+                else
+                    updateChannelsAndGuide(item.title)
+                end if
             end if
         end sub
 
