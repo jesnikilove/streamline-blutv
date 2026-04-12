@@ -844,15 +844,14 @@
                 return
             end if
 
-            row1 = ""
-            row2 = ""
-            row3 = ""
-            row4 = ""
+            row1 = "Now"
+            row2 = "Next"
+            row3 = "Later"
+            row4 = "More"
 
-            if progCount >= 1 then row1 = safeProgramStart(programs[0])
-            if progCount >= 2 then row2 = safeProgramStart(programs[1])
-            if progCount >= 3 then row3 = safeProgramStart(programs[2])
-            if progCount >= 4 then row4 = safeProgramStart(programs[3])
+            if progCount >= 2 then row2 = "Next  " + safeProgramStart(programs[1])
+            if progCount >= 3 then row3 = "Later  " + safeProgramStart(programs[2])
+            if progCount >= 4 then row4 = "More  " + safeProgramStart(programs[3])
 
             m.top.findNode("rowLabel1").text = row1
             m.top.findNode("rowLabel2").text = row2
