@@ -868,11 +868,15 @@
             setGuideBlock("p32", "p32t", 1018, 541, 4, "")
 
             if progCount >= 4 then
-                setGuideBlock("p41", "p41t", 590, 595, 420, safeProgramTitle(programs[3]))
-                setGuideBlock("p42", "p42t", 1018, 595, 4, "")
+                setGuideBlock("p41", "p41t", 590, 595, 330, safeProgramTitle(programs[3]))
+                if progCount > 4 then
+                    setGuideBlock("p42", "p42t", 928, 595, 150, "More…")
+                else
+                    setGuideBlock("p42", "p42t", 928, 595, 4, "")
+                end if
             else
                 setGuideBlock("p41", "p41t", 590, 595, 4, "")
-                setGuideBlock("p42", "p42t", 1018, 595, 4, "")
+                setGuideBlock("p42", "p42t", 928, 595, 4, "")
             end if
 
             maxPrograms = 8
