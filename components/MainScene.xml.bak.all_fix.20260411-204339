@@ -683,12 +683,6 @@
             if m.loadedChannels = invalid then return
 
             if category = invalid or category = "" then category = "All"
-
-            ' Prevent reapplying the same category over and over while focused
-            if m.selectedCategory = category and m.channelList.content <> invalid and m.channelList.content.getChildCount() > 0 then
-                return
-            end if
-
             m.selectedCategory = category
 
             filtered = []
@@ -754,9 +748,7 @@
             if item <> invalid then
                 print "DEBUG: category focus -> "; item.title
                 if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
-                    if item.title <> m.selectedCategory or m.channelList.content = invalid or m.channelList.content.getChildCount() = 0 then
-                        applyCategoryFilter(item.title)
-                    end if
+                    applyCategoryFilter(item.title)
                 else
                     updateChannelsAndGuide(item.title)
                 end if
