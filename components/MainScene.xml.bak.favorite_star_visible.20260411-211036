@@ -87,23 +87,14 @@
             translation="[200,425]"
             itemSize="[220,52]" />
 
-        <Rectangle
-            id="favoriteStarBox"
-            translation="[378,431]"
-            width="34"
-            height="30"
-            color="0x223b73CC" />
-
         <Label
             id="favoriteStar"
             text="☆"
-            translation="[384,432]"
-            width="24"
-            height="24"
-            color="0xEEF4FFFF"
-            font="font:LargeBoldSystemFont"
-            horizAlign="center"
-            vertAlign="center" />
+            translation="[392,437]"
+            width="20"
+            height="20"
+            color="0x6F86B6FF"
+            font="font:MediumBoldSystemFont" />
 
         <!-- Guide panel -->
         <Rectangle
@@ -247,7 +238,6 @@
             m.video = m.top.findNode("videoPlayer")
             m.categoryList = m.top.findNode("categoryList")
             m.channelList = m.top.findNode("channelList")
-            m.favoriteStarBox = m.top.findNode("favoriteStarBox")
             m.favoriteStar = m.top.findNode("favoriteStar")
             m.favoriteStarActive = false
             m.infoTitle = m.top.findNode("infoTitle")
@@ -881,34 +871,33 @@
         end sub
 
         sub updateFavoriteStarForFocus()
-            if m.favoriteStar = invalid or m.channelList = invalid or m.favoriteStarBox = invalid then return
+            if m.favoriteStar = invalid or m.channelList = invalid then return
 
             idx = m.channelList.itemFocused
             if idx < 0 then idx = 0
 
-            boxY = 431 + (idx * 52)
-            starY = 432 + (idx * 52)
-
-            m.favoriteStarBox.translation = [378, boxY]
-            m.favoriteStar.translation = [384, starY]
+            y = 437 + (idx * 52)
+            m.favoriteStar.translation = [392, y]
 
             isFav = false
             if m.filteredChannels <> invalid and idx >= 0 and idx < m.filteredChannels.Count() then
                 isFav = isFavoriteChannel(m.filteredChannels[idx])
             end if
 
-            if m.favoriteStarActive then
-                m.favoriteStarBox.color = "0x3E63A8FF"
-            else
-                m.favoriteStarBox.color = "0x223b73CC"
-            end if
-
             if isFav then
                 m.favoriteStar.text = "★"
-                m.favoriteStar.color = "0xFFD54AFF"
+                if m.favoriteStarActive then
+                    m.favoriteStar.color = "0xFFD54AFF"
+                else
+                    m.favoriteStar.color = "0xE3C34DFF"
+                end if
             else
                 m.favoriteStar.text = "☆"
-                m.favoriteStar.color = "0xEEF4FFFF"
+                if m.favoriteStarActive then
+                    m.favoriteStar.color = "0xEEF4FFFF"
+                else
+                    m.favoriteStar.color = "0x6F86B6FF"
+                end if
             end if
         end sub
 
