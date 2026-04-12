@@ -87,15 +87,6 @@
             translation="[200,425]"
             itemSize="[220,52]" />
 
-        <Label
-            id="favoriteStar"
-            text="☆"
-            translation="[392,437]"
-            width="20"
-            height="20"
-            color="0x6F86B6FF"
-            font="font:MediumBoldSystemFont" />
-
         <!-- Guide panel -->
         <Rectangle
             width="840"
@@ -238,8 +229,6 @@
             m.video = m.top.findNode("videoPlayer")
             m.categoryList = m.top.findNode("categoryList")
             m.channelList = m.top.findNode("channelList")
-            m.favoriteStar = m.top.findNode("favoriteStar")
-            m.favoriteStarActive = false
             m.infoTitle = m.top.findNode("infoTitle")
             m.infoMeta = m.top.findNode("infoMeta")
             m.guideLabel = m.top.findNode("guideLabel")
@@ -352,44 +341,27 @@
                     item = m.categoryList.content.getChild(m.categoryList.itemFocused)
                     if item <> invalid then
                         applyCategoryFilter(item.title)
-                        m.favoriteStarActive = false
-                        updateFavoriteStarForFocus()
                         m.channelList.setFocus(true)
                         return true
                     end if
                 end if
+            end if
 
-                if m.favoriteStarActive then
-                    if m.channelList <> invalid then
-                        toggleFavoriteByIndex(m.channelList.itemFocused)
-                        updateFavoriteStarForFocus()
-                        return true
-                    end if
+            if key = "options" then
+                if m.channelList <> invalid and m.channelList.hasFocus() then
+                    toggleFavoriteByIndex(m.channelList.itemFocused)
+                    return true
                 end if
             end if
 
             if key = "right" then
                 if m.categoryList <> invalid and m.categoryList.hasFocus() then
-                    m.favoriteStarActive = false
-                    updateFavoriteStarForFocus()
                     m.channelList.setFocus(true)
-                    return true
-                end if
-
-                if m.channelList <> invalid and m.channelList.hasFocus() then
-                    m.favoriteStarActive = true
-                    updateFavoriteStarForFocus()
                     return true
                 end if
             end if
 
             if key = "left" then
-                if m.favoriteStarActive then
-                    m.favoriteStarActive = false
-                    updateFavoriteStarForFocus()
-                    return true
-                end if
-
                 if m.channelList <> invalid and m.channelList.hasFocus() then
                     m.categoryList.setFocus(true)
                     return true
@@ -870,37 +842,6 @@
             item.title = title
         end sub
 
-        sub updateFavoriteStarForFocus()
-            if m.favoriteStar = invalid or m.channelList = invalid then return
-
-            idx = m.channelList.itemFocused
-            if idx < 0 then idx = 0
-
-            y = 437 + (idx * 52)
-            m.favoriteStar.translation = [392, y]
-
-            isFav = false
-            if m.filteredChannels <> invalid and idx >= 0 and idx < m.filteredChannels.Count() then
-                isFav = isFavoriteChannel(m.filteredChannels[idx])
-            end if
-
-            if isFav then
-                m.favoriteStar.text = "★"
-                if m.favoriteStarActive then
-                    m.favoriteStar.color = "0xFFD54AFF"
-                else
-                    m.favoriteStar.color = "0xE3C34DFF"
-                end if
-            else
-                m.favoriteStar.text = "☆"
-                if m.favoriteStarActive then
-                    m.favoriteStar.color = "0xEEF4FFFF"
-                else
-                    m.favoriteStar.color = "0x6F86B6FF"
-                end if
-            end if
-        end sub
-
         sub onCategoryFocus()
             item = m.categoryList.content.getChild(m.categoryList.itemFocused)
             if item <> invalid then
@@ -912,7 +853,6 @@
         sub onChannelFocus()
             idx = m.channelList.itemFocused
             item = m.channelList.content.getChild(idx)
-            updateFavoriteStarForFocus()
             if item <> invalid then
                 m.infoTitle.text = item.title
                 m.infoMeta.text = "Loaded provider channel"
