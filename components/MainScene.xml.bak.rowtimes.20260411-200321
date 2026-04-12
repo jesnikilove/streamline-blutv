@@ -1,0 +1,917 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="MainScene" extends="Scene">
+
+    <children>
+        <!-- Background -->
+        <Rectangle width="1280" height="720" color="0x0f1f3dFF" />
+
+        <!-- Video -->
+        <Video
+            id="videoPlayer"
+            width="1280"
+            height="280"
+            translation="[0,0]" />
+
+        <!-- Info panel -->
+        <Rectangle
+            width="1240"
+            height="70"
+            translation="[20,290]"
+            color="0x162a4fFF" />
+
+        <Label
+            id="infoTitle"
+            text="StreamLine BluTV Setup"
+            translation="[40,306]"
+            width="700"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+
+        <Label
+            id="infoMeta"
+            text="Live TV Guide"
+            translation="[40,332]"
+            width="700"
+            height="20"
+            color="0xB8C7E6FF"
+            font="font:SmallSystemFont" />
+
+        <Label
+            id="guideLabel"
+            translation="[100,100]"            
+            width="1100"
+            height="160"
+            color="0xFFFFFFFF"
+            font="font:SmallSystemFont"
+            horizAlign="left"
+            vertAlign="top"
+            wrap="true"
+            text="" />
+
+        <!-- Left category panel -->
+        <Rectangle
+            width="170"
+            height="340"
+            translation="[20,375]"
+            color="0x162a4fFF" />
+
+        <Label
+            text="Categories"
+            translation="[35,388]"
+            width="130"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+        <LabelList
+            id="categoryList"
+            translation="[20,425]"
+            itemSize="[170,52]" />
+
+        <!-- Channel panel -->
+        <Rectangle
+            width="220"
+            height="340"
+            translation="[200,375]"
+            color="0x162a4fFF" />
+
+        <Label
+            text="Channels"
+            translation="[215,388]"
+            width="160"
+            height="24"
+            color="0xEEF4FFFF"
+            font="font:MediumBoldSystemFont" />
+        <LabelList
+            id="channelList"
+            translation="[200,425]"
+            itemSize="[220,52]" />
+
+        <!-- Guide panel -->
+        <Rectangle
+            width="840"
+            height="340"
+            translation="[430,375]"
+            color="0x162a4fFF" />
+
+        <!-- Time header -->
+
+
+        <!-- Soft row lines -->
+        <Rectangle translation="[430,425]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,479]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,533]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,587]" width="840" height="2" color="0x223b73AA" />
+        <Rectangle translation="[430,641]" width="840" height="2" color="0x223b73AA" />
+
+        <!-- Row labels inside guide -->
+        <Label id="rowLabel1" text="" translation="[446,438]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel2" text="" translation="[446,492]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel3" text="" translation="[446,546]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+        <Label id="rowLabel4" text="" translation="[446,600]" width="140" height="18" color="0xB8C7E6FF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 1 -->
+        <Rectangle id="p11" translation="[590,433]" width="210" height="36" color="0x162a4f44" />
+        <Label id="p11t" text="" translation="[602,442]" width="186" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p12" translation="[808,433]" width="140" height="36" color="0x162a4f44" />
+        <Label id="p12t" text="" translation="[820,442]" width="116" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 2 -->
+        <Rectangle id="p21" translation="[590,487]" width="120" height="36" color="0x162a4f44" />
+        <Label id="p21t" text="" translation="[602,496]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p22" translation="[718,487]" width="240" height="36" color="0x162a4f44" />
+        <Label id="p22t" text="" translation="[730,496]" width="216" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 3 -->
+        <Rectangle id="p31" translation="[590,541]" width="180" height="36" color="0x162a4f44" />
+        <Label id="p31t" text="" translation="[602,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p32" translation="[778,541]" width="180" height="36" color="0x162a4f44" />
+        <Label id="p32t" text="" translation="[790,550]" width="156" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- Program blocks row 4 -->
+        <Rectangle id="p41" translation="[590,595]" width="120" height="36" color="0x162a4f44" />
+        <Label id="p41t" text="" translation="[602,604]" width="96" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+        <Rectangle id="p42" translation="[718,595]" width="300" height="36" color="0x162a4f44" />
+        <Label id="p42t" text="" translation="[730,604]" width="276" height="18" color="0xFFFFFFFF" font="font:SmallSystemFont" />
+
+        <!-- SAFE SETUP OVERLAY -->
+        
+        <Group id="setupOverlay" visible="true">
+            <children>
+                <Rectangle width="1280" height="720" color="0x071b4aEE" />
+
+                <Rectangle
+                    width="900"
+                    height="460"
+                    translation="[190,120]"
+                    color="0x162a4fFF" />
+
+                <Label
+                    text="Activate StreamLine BluTV"
+                    translation="[290,160]"
+                    width="700"
+                    height="40"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:LargeBoldSystemFont" />
+
+                <Label
+                    id="setupStatus"
+                    text="Use this code on your setup website"
+                    translation="[300,215]"
+                    width="680"
+                    height="24"
+                    horizAlign="center"
+                    color="0xB8C7E6FF"
+                    font="font:MediumSystemFont" />
+
+                <Label
+                    text="Device Code"
+                    translation="[470,280]"
+                    width="340"
+                    height="24"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:MediumBoldSystemFont" />
+
+                <Rectangle
+                    translation="[410,320]"
+                    width="460"
+                    height="82"
+                    color="0x223b73FF" />
+
+                <Label
+                    id="deviceCodeValue"
+                    text="BLU-TV-001"
+                    translation="[430,342]"
+                    width="420"
+                    height="34"
+                    horizAlign="center"
+                    color="0xEEF4FFFF"
+                    font="font:LargeBoldSystemFont" />
+
+                <Button
+                    id="activateButton"
+                    translation="[250,455]"
+                    height="58"
+                    text="Activate on Web" />
+
+                <Button
+                    id="refreshButton"
+                    translation="[520,455]"
+                    height="58"
+                    text="Refresh" />
+
+                <Button
+                    id="closeSetupButton"
+                    translation="[790,455]"
+                    height="58"
+                    text="Close Setup" />
+
+                <!-- Hidden legacy nodes kept for stability -->
+                <Rectangle id="field1Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Rectangle id="field2Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Rectangle id="field3Rect" translation="[0,0]" width="1" height="1" color="0x223b73FF" visible="false" />
+                <Button id="setupTypeButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="sourceButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="nicknameButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="hostButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="usernameButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="passwordButton" translation="[0,0]" height="1" text="" visible="false" />
+                <Button id="continueButton" translation="[0,0]" height="1" text="" visible="false" />
+            </children>
+        </Group>
+
+    </children>
+
+    <script type="text/brightscript"><![CDATA[
+        sub init()
+            m.video = m.top.findNode("videoPlayer")
+            m.categoryList = m.top.findNode("categoryList")
+            m.channelList = m.top.findNode("channelList")
+            m.infoTitle = m.top.findNode("infoTitle")
+            m.infoMeta = m.top.findNode("infoMeta")
+            m.guideLabel = m.top.findNode("guideLabel")
+
+            m.setupOverlay = m.top.findNode("setupOverlay")
+            m.setupStatus = m.top.findNode("setupStatus")
+            m.deviceCode = m.top.findNode("deviceCodeValue").text
+            m.apiBase = "http://192.168.1.81:3001"
+            m.activationTask = invalid
+            m.loadChannelsTask = invalid
+            m.isRefreshing = false
+            m.isLoadingChannels = false
+            m.channelPrograms = []
+
+            if m.progressTimer <> invalid then
+                m.progressTimer.control = "stop"
+            end if
+            m.loadedChannels = invalid
+            m.lastActivation = invalid
+            m.bgRefreshTask = invalid
+            buildCategories()
+            m.categoryList.observeField("itemFocused", "onCategoryFocus")
+            m.channelList.observeField("itemFocused", "onChannelFocus")
+
+            m.top.findNode("activateButton").observeField("buttonSelected", "onActivatePressed")
+            m.top.findNode("refreshButton").observeField("buttonSelected", "onRefreshPressed")
+            m.top.findNode("closeSetupButton").observeField("buttonSelected", "onCloseSetup")
+
+            m.top.findNode("activateButton").setFocus(true)
+
+            ' AUTO START ACTIVATION CHECK
+            m.setupOverlay.visible = false
+
+            ensureActivationTask()
+            m.isRefreshing = true
+            m.setupStatus.text = "Checking activation..."
+            m.activationTask.apiBase = m.apiBase
+            m.activationTask.deviceCode = m.deviceCode
+            m.activationTask.control = "RUN"
+        end sub
+        sub onCloseSetup()
+            m.isRefreshing = false
+            m.isLoadingChannels = false
+            m.setupOverlay.visible = false
+            m.setupStatus.text = ""
+            m.categoryList.setFocus(true)
+        end sub
+
+
+
+        function onKeyEvent(key as String, press as Boolean) as Boolean
+            if not press then return false
+            if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
+
+            activateBtn = m.top.findNode("activateButton")
+            refreshBtn = m.top.findNode("refreshButton")
+            closeBtn = m.top.findNode("closeSetupButton")
+
+            if key = "OK" or key = "select" then
+                if activateBtn.hasFocus() then
+                    onActivatePressed()
+                    return true
+                end if
+                if refreshBtn.hasFocus() then
+                    onRefreshPressed()
+                    return true
+                end if
+                if closeBtn.hasFocus() then
+                    onCloseSetup()
+                    return true
+                end if
+            end if
+
+            if key = "back" then
+                onCloseSetup()
+                return true
+            end if
+
+            if key = "right" then
+                if activateBtn.hasFocus() then
+                    refreshBtn.setFocus(true)
+                    return true
+                end if
+                if refreshBtn.hasFocus() then
+                    closeBtn.setFocus(true)
+                    return true
+                end if
+            end if
+
+            if key = "left" then
+                if closeBtn.hasFocus() then
+                    refreshBtn.setFocus(true)
+                    return true
+                end if
+                if refreshBtn.hasFocus() then
+                    activateBtn.setFocus(true)
+                    return true
+                end if
+            end if
+
+            return false
+        end function
+        sub onActivatePressed()
+            m.setupStatus.text = "Go to your website and enter code " + m.top.findNode("deviceCodeValue").text
+        end sub
+        sub onRefreshPressed()
+            print "DEBUG: onRefreshPressed"
+            if m.isRefreshing then
+                m.setupStatus.text = "Still checking activation..."
+                return
+            end if
+
+            ensureActivationTask()
+
+            m.isRefreshing = true
+            m.setupStatus.text = "Checking activation..."
+
+            if m.progressTimer <> invalid then
+                m.progressTimer.control = "stop"
+            end if
+
+            m.activationTask.apiBase = m.apiBase
+            m.activationTask.deviceCode = m.deviceCode
+            m.activationTask.control = "RUN"
+        end sub
+
+
+
+
+        sub hideSetupFields()
+        end sub
+
+        function setupFieldsVisible() as Boolean
+            return false
+        end function
+
+
+        sub ensureActivationTask()
+            if m.activationTask <> invalid then return
+
+            m.activationTask = CreateObject("roSGNode", "ActivationCheckTask")
+            m.activationTask.observeField("responseJson", "onActivationTaskResponse")
+            m.activationTask.observeField("errorMessage", "onActivationTaskError")
+        end sub
+        sub onActivationTaskResponse()
+            print "DEBUG: onActivationTaskResponse"
+            if m.activationTask = invalid then return
+
+            response = m.activationTask.responseJson
+            print "DEBUG: activation response len = "; Len(response)
+            if response = invalid or response = "" then return
+
+            m.isRefreshing = false
+
+            data = ParseJson(response)
+            if data = invalid or data.ok <> true or data.activation = invalid then
+                m.setupStatus.text = "Not activated yet."
+                return
+            end if
+
+            m.setupStatus.text = "Activated!"
+            m.lastActivation = data.activation
+            m.isLoadingChannels = true
+            startLoadingChannels(data.activation)
+        end sub
+
+
+        sub onActivationTaskError()
+            if m.activationTask = invalid then return
+
+            err = m.activationTask.errorMessage
+            if err = invalid or err = "" then return
+
+            m.isRefreshing = false
+            m.setupStatus.text = err
+        end sub
+
+
+        sub ensureLoadChannelsTask()
+            if m.loadChannelsTask <> invalid then return
+
+            m.loadChannelsTask = CreateObject("roSGNode", "LoadChannelsTask")
+            m.loadChannelsTask.observeField("responseJson", "onLoadChannelsTaskResponse")
+            m.loadChannelsTask.observeField("errorMessage", "onLoadChannelsTaskError")
+        end sub
+
+        
+
+        sub onProgressTick()
+            if m.progressTimer = invalid then return
+
+            m.progressStep = m.progressStep + 1
+
+            if m.progressStep = 1 then
+                m.setupStatus.text = "Connecting to provider..."
+            else if m.progressStep = 2 then
+                m.setupStatus.text = "Downloading playlist..."
+            else if m.progressStep = 3 then
+                m.setupStatus.text = "Parsing channels..."
+            else if m.progressStep = 4 then
+                m.setupStatus.text = "Almost done..."
+            else if m.progressStep > 5 then
+                m.progressStep = 2
+            end if
+        end sub
+
+        sub startLoadingChannels(activation as Object)
+            print "DEBUG: startLoadingChannels"
+            ensureLoadChannelsTask()
+
+            m.setupStatus.text = "Loading cached channels..."
+
+            m.progressTimer = CreateObject("roSGNode", "Timer")
+            m.progressTimer.duration = 2
+            m.progressTimer.repeat = true
+            m.progressTimer.observeField("fire", "onProgressTick")
+            m.progressStep = 0
+            m.progressTimer.control = "start"
+
+            m.loadChannelsTask.apiBase = m.apiBase
+            m.loadChannelsTask.setupType = aaLookupString(activation, "setupType")
+            m.loadChannelsTask.host = aaLookupString(activation, "serverUrl")
+            m.loadChannelsTask.username = aaLookupString(activation, "username")
+            m.loadChannelsTask.password = aaLookupString(activation, "password")
+            m.loadChannelsTask.m3uUrl = aaLookupString(activation, "playlistUrl")
+            m.loadChannelsTask.epgUrl = aaLookupString(activation, "epgUrl")
+            m.loadChannelsTask.forceRefresh = false
+            m.loadChannelsTask.control = "RUN"
+        end sub
+
+                sub onLoadChannelsTaskResponse()
+            print "DEBUG: onLoadChannelsTaskResponse"
+            if m.loadChannelsTask = invalid then return
+            if m.isLoadingChannels = false then return
+
+            raw = m.loadChannelsTask.responseJson
+            print "DEBUG: channels response len = "; Len(raw)
+            if raw = invalid or raw = "" then return
+
+            data = ParseJson(raw)
+            if data = invalid or data.ok <> true or data.channels = invalid or data.channels.Count() = 0 then
+                m.isLoadingChannels = false
+                m.setupStatus.text = "No channels returned."
+                return
+            end if
+
+            ' Load the first 25 real channels for Roku UI
+            subset = []
+            maxCount = 5000
+            for i = 0 to data.channels.Count() - 1
+                if i >= maxCount then exit for
+                subset.Push(data.channels[i])
+            end for
+
+            print "DEBUG: before populateLoadedChannels"
+            m.loadedChannels = subset
+            populateLoadedChannels()
+            print "DEBUG: after populateLoadedChannels"
+            clearDemoGuideForLoadedChannels()
+
+            m.isLoadingChannels = false
+            m.setupStatus.text = "Loaded first 25 channels."
+            m.setupOverlay.visible = false
+            m.setupStatus.text = ""
+            m.infoMeta.text = "Loaded provider channels"
+            m.channelList.jumpToItem = 0
+            m.channelList.setFocus(true)
+            print "DEBUG: finished onLoadChannelsTaskResponse"
+
+            if m.lastActivation <> invalid then
+                startBackgroundRefresh(m.lastActivation)
+            end if
+        end sub
+
+
+        sub startBackgroundRefresh(activation as Object)
+            if activation = invalid then return
+            if m.bgRefreshTask <> invalid then return
+
+            print "DEBUG: startBackgroundRefresh"
+            m.bgRefreshTask = CreateObject("roSGNode", "LoadChannelsTask")
+            m.bgRefreshTask.observeField("responseJson", "onBackgroundRefreshResponse")
+            m.bgRefreshTask.observeField("errorMessage", "onBackgroundRefreshError")
+
+            m.bgRefreshTask.apiBase = m.apiBase
+            m.bgRefreshTask.setupType = aaLookupString(activation, "setupType")
+            m.bgRefreshTask.host = aaLookupString(activation, "serverUrl")
+            m.bgRefreshTask.username = aaLookupString(activation, "username")
+            m.bgRefreshTask.password = aaLookupString(activation, "password")
+            m.bgRefreshTask.m3uUrl = aaLookupString(activation, "playlistUrl")
+            m.bgRefreshTask.epgUrl = aaLookupString(activation, "epgUrl")
+            m.bgRefreshTask.forceRefresh = true
+            m.bgRefreshTask.control = "RUN"
+        end sub
+
+        sub onBackgroundRefreshResponse()
+            if m.bgRefreshTask = invalid then return
+
+            raw = m.bgRefreshTask.responseJson
+            if raw = invalid or raw = "" then return
+
+            print "DEBUG: onBackgroundRefreshResponse len = "; Len(raw)
+
+            data = ParseJson(raw)
+            if data = invalid or data.ok <> true or data.channels = invalid or data.channels.Count() = 0 then
+                m.bgRefreshTask = invalid
+                return
+            end if
+
+            subset = []
+            maxCount = 5000
+            for i = 0 to data.channels.Count() - 1
+                if i >= maxCount then exit for
+                subset.Push(data.channels[i])
+            end for
+
+            m.loadedChannels = subset
+            populateLoadedChannels()
+            clearDemoGuideForLoadedChannels()
+            m.infoMeta.text = "Channels refreshed in background"
+            m.bgRefreshTask = invalid
+        end sub
+
+        sub onBackgroundRefreshError()
+            if m.bgRefreshTask = invalid then return
+
+            err = m.bgRefreshTask.errorMessage
+            print "DEBUG: background refresh error = "; err
+            m.bgRefreshTask = invalid
+        end sub
+
+        sub onLoadChannelsTaskError()
+            print "DEBUG: onLoadChannelsTaskError"
+            if m.loadChannelsTask = invalid then return
+            if m.isLoadingChannels = false then return
+
+            err = m.loadChannelsTask.errorMessage
+            print "DEBUG: channels error = "; err
+            if err = invalid or err = "" then return
+
+            m.isLoadingChannels = false
+            m.setupStatus.text = err
+        end sub
+
+        sub populateLoadedChannels()
+            if m.loadedChannels = invalid then return
+
+            content = CreateObject("roSGNode", "ContentNode")
+            m.channelPrograms = []
+
+            for each ch in m.loadedChannels
+                item = content.CreateChild("ContentNode")
+
+                num = aaLookupString(ch, "number")
+                nm = aaLookupString(ch, "name")
+                url = aaLookupString(ch, "streamUrl")
+
+                if num <> "" then
+                    item.title = num + "  " + nm
+                else
+                    item.title = nm
+                end if
+
+                item.addField("url", "string", true)
+                item.url = url
+
+                if ch.programs <> invalid then
+                    m.channelPrograms.Push(ch.programs)
+                    print "DEBUG: stored programs for "; item.title; " count="; ch.programs.Count()
+                else
+                    m.channelPrograms.Push([])
+                    print "DEBUG: stored programs for "; item.title; " count=0"
+                end if
+            end for
+
+            m.channelList.content = content
+
+            firstChannel = m.channelList.content.getChild(0)
+            if firstChannel <> invalid then
+                print "DEBUG: first loaded channel ready"
+                playChannel(firstChannel)
+                updateGuideDisplayByIndex(0, firstChannel)
+            end if
+        end sub
+
+        sub clearDemoGuideForLoadedChannels()
+            ' Remove fake guide names completely
+            m.top.findNode("rowLabel1").text = ""
+            m.top.findNode("rowLabel2").text = ""
+            m.top.findNode("rowLabel3").text = ""
+            m.top.findNode("rowLabel4").text = ""
+
+            ' Remove fake guide titles completely
+            m.top.findNode("p11t").text = ""
+            m.top.findNode("p12t").text = ""
+            m.top.findNode("p21t").text = ""
+            m.top.findNode("p22t").text = ""
+            m.top.findNode("p31t").text = ""
+            m.top.findNode("p32t").text = ""
+            m.top.findNode("p41t").text = ""
+            m.top.findNode("p42t").text = ""
+
+            ' Fade out fake guide blocks
+            m.top.findNode("p11").color = "0x162a4f44"
+            m.top.findNode("p12").color = "0x162a4f44"
+            m.top.findNode("p21").color = "0x162a4f44"
+            m.top.findNode("p22").color = "0x162a4f44"
+            m.top.findNode("p31").color = "0x162a4f44"
+            m.top.findNode("p32").color = "0x162a4f44"
+            m.top.findNode("p41").color = "0x162a4f44"
+            m.top.findNode("p42").color = "0x162a4f44"
+        end sub
+
+        function aaLookupString(obj as Dynamic, key as String) as String
+            if obj = invalid then return ""
+            val = obj.Lookup(key)
+            if val = invalid then return ""
+            return val
+        end function
+
+        sub buildCategories()
+            content = CreateObject("roSGNode", "ContentNode")
+
+            addListItem(content, "Movies")
+            addListItem(content, "Sports")
+            addListItem(content, "News")
+            addListItem(content, "Family")
+
+            m.categoryList.content = content
+        end sub
+
+        sub addListItem(parent as Object, title as String)
+            item = parent.CreateChild("ContentNode")
+            item.title = title
+        end sub
+
+        sub onCategoryFocus()
+            if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
+                print "DEBUG: category focus ignored because loaded channels are active"
+                return
+            end if
+
+            item = m.categoryList.content.getChild(m.categoryList.itemFocused)
+            if item <> invalid
+                updateChannelsAndGuide(item.title)
+            end if
+        end sub
+
+        sub onChannelFocus()
+            idx = m.channelList.itemFocused
+            item = m.channelList.content.getChild(idx)
+            if item <> invalid then
+                m.infoTitle.text = item.title
+                m.infoMeta.text = "Loaded provider channel"
+                print "DEBUG: channel focus -> "; item.title
+                playChannel(item)
+                updateGuideDisplayByIndex(idx, item)
+            end if
+        end sub
+
+        sub updateChannelsAndGuide(category as String)
+            print "DEBUG: updateChannelsAndGuide disabled for loaded-provider mode"
+        end sub
+
+        sub buildChannels(category as String)
+            print "DEBUG: buildChannels disabled"
+        end sub
+
+        sub addChannel(parent as Object, title as String)
+            print "DEBUG: addChannel disabled"
+        end sub
+
+        sub buildGuide(category as String)
+            print "DEBUG: buildGuide disabled"
+        end sub
+
+        sub setRowLabels(a as String, b as String, c as String, d as String)
+        end sub
+
+        sub setProgramTexts(a as String, b as String, c as String, d as String, e as String, f as String, g as String, h as String)
+        end sub
+
+
+
+
+
+        sub setGuideBlock(rectId as String, labelId as String, x as Integer, y as Integer, w as Integer, title as String)
+            rect = m.top.findNode(rectId)
+            lbl = m.top.findNode(labelId)
+            if rect = invalid or lbl = invalid then return
+
+            rect.translation = [x, y]
+            rect.width = w
+            rect.height = 36
+
+            lbl.translation = [x + 12, y + 9]
+            lbl.width = w - 24
+            lbl.height = 18
+
+            if title = "" then
+                rect.color = "0x162a4f44"
+                lbl.text = ""
+            else
+                rect.color = "0x2d4f8fCC"
+                lbl.text = title
+            end if
+        end sub
+
+        sub clearGuideGrid()
+            m.top.findNode("rowLabel1").text = ""
+            m.top.findNode("rowLabel2").text = ""
+            m.top.findNode("rowLabel3").text = ""
+            m.top.findNode("rowLabel4").text = ""
+
+            setGuideBlock("p11", "p11t", 590, 433, 210, "")
+            setGuideBlock("p12", "p12t", 808, 433, 140, "")
+            setGuideBlock("p21", "p21t", 590, 487, 120, "")
+            setGuideBlock("p22", "p22t", 718, 487, 240, "")
+            setGuideBlock("p31", "p31t", 590, 541, 180, "")
+            setGuideBlock("p32", "p32t", 778, 541, 180, "")
+            setGuideBlock("p41", "p41t", 590, 595, 120, "")
+            setGuideBlock("p42", "p42t", 718, 595, 300, "")
+        end sub
+
+        function safeProgramTitle(prog as Object) as String
+            title = aaLookupString(prog, "title")
+            if title = "" then title = "Untitled Program"
+            return title
+        end function
+
+        function pad2(n as Integer) as String
+            if n < 10 then return "0" + n.ToStr()
+            return n.ToStr()
+        end function
+
+        function formatMinutesAsClock(total as Integer) as String
+            while total < 0
+                total = total + 1440
+            end while
+            total = total mod 1440
+
+            hour24 = Int(total / 60)
+            minute = total mod 60
+
+            suffix = "AM"
+            if hour24 >= 12 then suffix = "PM"
+
+            hour12 = hour24 mod 12
+            if hour12 = 0 then hour12 = 12
+
+            return hour12.ToStr() + ":" + pad2(minute) + " " + suffix
+        end function
+
+        function parseProgramStartToLocalDisplay(raw as String) as String
+            if raw = invalid or raw = "" then return ""
+
+            if Instr(1, raw, "T") > 0 then
+                parts = raw.Tokenize("T")
+                if parts.Count() < 2 then return raw
+
+                timePart = parts[1]
+
+                zPos = Instr(1, timePart, "Z")
+                if zPos > 0 then timePart = Left(timePart, zPos - 1)
+
+                plusPos = Instr(1, timePart, "+")
+                if plusPos > 0 then timePart = Left(timePart, plusPos - 1)
+
+                if Len(timePart) > 8 then timePart = Left(timePart, 8)
+
+                hm = timePart.Tokenize(":")
+                if hm.Count() < 2 then return raw
+
+                hour = Val(hm[0])
+                minute = Val(hm[1])
+
+                total = (hour * 60) + minute
+
+                ' Eastern Daylight Time
+                total = total - 240
+
+                return formatMinutesAsClock(total)
+            end if
+
+            return raw
+        end function
+
+        function safeProgramStart(prog as Object) as String
+            startText = aaLookupString(prog, "start")
+            if startText = "" then startText = aaLookupString(prog, "startTime")
+            return parseProgramStartToLocalDisplay(startText)
+        end function
+
+        sub updateGuideDisplayByIndex(idx as Integer, channel as Object)
+            guideText = ""
+            if m.guideLabel = invalid then return
+
+            clearGuideGrid()
+
+            programs = []
+            if m.channelPrograms <> invalid and idx >= 0 and idx < m.channelPrograms.Count() then
+                programs = m.channelPrograms[idx]
+            end if
+
+            progCount = 0
+            if programs <> invalid then progCount = programs.Count()
+
+            print "DEBUG: updateGuideDisplayByIndex idx="; idx; " title="; channel.title; " programs="; progCount
+
+            if programs = invalid or progCount = 0 then
+                m.infoMeta.text = "No guide data available"
+                m.guideLabel.text = "No guide data available"
+                return
+            end if
+
+            row1 = "Now"
+            row2 = "Next"
+            row3 = "Later"
+            row4 = "More"
+
+            if progCount >= 2 then row2 = "Next  " + safeProgramStart(programs[1])
+            if progCount >= 3 then row3 = "Later  " + safeProgramStart(programs[2])
+            if progCount >= 4 then row4 = "More  " + safeProgramStart(programs[3])
+
+            m.top.findNode("rowLabel1").text = row1
+            m.top.findNode("rowLabel2").text = row2
+            m.top.findNode("rowLabel3").text = row3
+            m.top.findNode("rowLabel4").text = row4
+
+            if progCount >= 1 then setGuideBlock("p11", "p11t", 590, 433, 420, safeProgramTitle(programs[0]))
+            setGuideBlock("p12", "p12t", 1018, 433, 4, "")
+
+            if progCount >= 2 then setGuideBlock("p21", "p21t", 590, 487, 420, safeProgramTitle(programs[1]))
+            setGuideBlock("p22", "p22t", 1018, 487, 4, "")
+
+            if progCount >= 3 then setGuideBlock("p31", "p31t", 590, 541, 420, safeProgramTitle(programs[2]))
+            setGuideBlock("p32", "p32t", 1018, 541, 4, "")
+
+            if progCount >= 4 then
+                setGuideBlock("p41", "p41t", 590, 595, 420, safeProgramTitle(programs[3]))
+                setGuideBlock("p42", "p42t", 1018, 595, 4, "")
+            else
+                setGuideBlock("p41", "p41t", 590, 595, 4, "")
+                setGuideBlock("p42", "p42t", 1018, 595, 4, "")
+            end if
+
+            maxPrograms = 8
+            if progCount < maxPrograms then maxPrograms = progCount
+
+            for i = 0 to maxPrograms - 1
+                prog = programs[i]
+                title = safeProgramTitle(prog)
+                time = safeProgramStart(prog)
+
+                if i = 0 then
+                    guideText = guideText + "NOW: " + title + chr(10)
+                else
+                    guideText = guideText + time + " - " + title + chr(10)
+                end if
+            end for
+
+            m.infoMeta.text = "Live TV Guide"
+            m.guideLabel.text = guideText
+        end sub
+
+        sub playChannel(channel as Object)
+            print "DEBUG: playChannel -> "; channel.title
+
+            if channel = invalid then return
+            if channel.url = invalid or channel.url = "" then
+                m.infoTitle.text = channel.title
+                m.infoMeta.text = "No stream URL available"
+                return
+            end if
+
+            content = CreateObject("roSGNode", "ContentNode")
+            content.url = channel.url
+            content.streamformat = "hls"
+            m.video.content = content
+            m.video.control = "play"
+
+            m.infoTitle.text = channel.title
+            m.infoMeta.text = "Playing live stream"
+        end sub
+    ]]></script>
+</component>
