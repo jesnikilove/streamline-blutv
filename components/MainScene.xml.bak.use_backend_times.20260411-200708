@@ -819,7 +819,7 @@
         function safeProgramStart(prog as Object) as String
             startText = aaLookupString(prog, "start")
             if startText = "" then startText = aaLookupString(prog, "startTime")
-            return startText
+            return parseProgramStartToLocalDisplay(startText)
         end function
 
         sub updateGuideDisplayByIndex(idx as Integer, channel as Object)
