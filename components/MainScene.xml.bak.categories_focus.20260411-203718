@@ -242,8 +242,6 @@
             m.isRefreshing = false
             m.isLoadingChannels = false
             m.channelPrograms = []
-            m.filteredChannels = []
-            m.selectedCategory = "All"
 
             if m.progressTimer <> invalid then
                 m.progressTimer.control = "stop"
@@ -283,67 +281,50 @@
 
         function onKeyEvent(key as String, press as Boolean) as Boolean
             if not press then return false
+            if m.setupOverlay = invalid or m.setupOverlay.visible = false then return false
 
-            if m.setupOverlay <> invalid and m.setupOverlay.visible = true then
-                activateBtn = m.top.findNode("activateButton")
-                refreshBtn = m.top.findNode("refreshButton")
-                closeBtn = m.top.findNode("closeSetupButton")
+            activateBtn = m.top.findNode("activateButton")
+            refreshBtn = m.top.findNode("refreshButton")
+            closeBtn = m.top.findNode("closeSetupButton")
 
-                if key = "OK" or key = "select" then
-                    if activateBtn.hasFocus() then
-                        onActivatePressed()
-                        return true
-                    end if
-                    if refreshBtn.hasFocus() then
-                        onRefreshPressed()
-                        return true
-                    end if
-                    if closeBtn.hasFocus() then
-                        onCloseSetup()
-                        return true
-                    end if
+            if key = "OK" or key = "select" then
+                if activateBtn.hasFocus() then
+                    onActivatePressed()
+                    return true
                 end if
-
-                if key = "back" then
+                if refreshBtn.hasFocus() then
+                    onRefreshPressed()
+                    return true
+                end if
+                if closeBtn.hasFocus() then
                     onCloseSetup()
                     return true
                 end if
+            end if
 
-                if key = "right" then
-                    if activateBtn.hasFocus() then
-                        refreshBtn.setFocus(true)
-                        return true
-                    end if
-                    if refreshBtn.hasFocus() then
-                        closeBtn.setFocus(true)
-                        return true
-                    end if
-                end if
-
-                if key = "left" then
-                    if closeBtn.hasFocus() then
-                        refreshBtn.setFocus(true)
-                        return true
-                    end if
-                    if refreshBtn.hasFocus() then
-                        activateBtn.setFocus(true)
-                        return true
-                    end if
-                end if
-
-                return false
+            if key = "back" then
+                onCloseSetup()
+                return true
             end if
 
             if key = "right" then
-                if m.categoryList <> invalid and m.categoryList.hasFocus() then
-                    m.channelList.setFocus(true)
+                if activateBtn.hasFocus() then
+                    refreshBtn.setFocus(true)
+                    return true
+                end if
+                if refreshBtn.hasFocus() then
+                    closeBtn.setFocus(true)
                     return true
                 end if
             end if
 
             if key = "left" then
-                if m.channelList <> invalid and m.channelList.hasFocus() then
-                    m.categoryList.setFocus(true)
+                if closeBtn.hasFocus() then
+                    refreshBtn.setFocus(true)
+                    return true
+                end if
+                if refreshBtn.hasFocus() then
+                    activateBtn.setFocus(true)
                     return true
                 end if
             end if
@@ -595,8 +576,42 @@
         sub populateLoadedChannels()
             if m.loadedChannels = invalid then return
 
-            rebuildCategoriesFromLoadedChannels()
-            applyCategoryFilter(m.selectedCategory)
+            content = CreateObject("roSGNode", "ContentNode")
+            m.channelPrograms = []
+
+            for each ch in m.loadedChannels
+                item = content.CreateChild("ContentNode")
+
+                num = aaLookupString(ch, "number")
+                nm = aaLookupString(ch, "name")
+                url = aaLookupString(ch, "streamUrl")
+
+                if num <> "" then
+                    item.title = num + "  " + nm
+                else
+                    item.title = nm
+                end if
+
+                item.addField("url", "string", true)
+                item.url = url
+
+                if ch.programs <> invalid then
+                    m.channelPrograms.Push(ch.programs)
+                    print "DEBUG: stored programs for "; item.title; " count="; ch.programs.Count()
+                else
+                    m.channelPrograms.Push([])
+                    print "DEBUG: stored programs for "; item.title; " count=0"
+                end if
+            end for
+
+            m.channelList.content = content
+
+            firstChannel = m.channelList.content.getChild(0)
+            if firstChannel <> invalid then
+                print "DEBUG: first loaded channel ready"
+                playChannel(firstChannel)
+                updateGuideDisplayByIndex(0, firstChannel)
+            end if
         end sub
 
         sub clearDemoGuideForLoadedChannels()
@@ -636,106 +651,13 @@
 
         sub buildCategories()
             content = CreateObject("roSGNode", "ContentNode")
-            addListItem(content, "All")
-            m.categoryList.content = content
-        end sub
 
-        function lookupCategoryName(ch as Object) as String
-            if ch = invalid then return ""
-
-            val = aaLookupString(ch, "group")
-            if val <> "" then return val
-
-            val = aaLookupString(ch, "groupTitle")
-            if val <> "" then return val
-
-            val = aaLookupString(ch, "category")
-            if val <> "" then return val
-
-            val = aaLookupString(ch, "categoryName")
-            if val <> "" then return val
-
-            return ""
-        end function
-
-        sub rebuildCategoriesFromLoadedChannels()
-            content = CreateObject("roSGNode", "ContentNode")
-            addListItem(content, "All")
-
-            seen = CreateObject("roAssociativeArray")
-
-            if m.loadedChannels <> invalid then
-                for each ch in m.loadedChannels
-                    cat = lookupCategoryName(ch)
-                    if cat <> "" and seen.Lookup(cat) = invalid then
-                        seen[cat] = true
-                        addListItem(content, cat)
-                    end if
-                end for
-            end if
+            addListItem(content, "Movies")
+            addListItem(content, "Sports")
+            addListItem(content, "News")
+            addListItem(content, "Family")
 
             m.categoryList.content = content
-            m.categoryList.jumpToItem = 0
-            m.selectedCategory = "All"
-        end sub
-
-        sub applyCategoryFilter(category as String)
-            if m.loadedChannels = invalid then return
-
-            if category = invalid or category = "" then category = "All"
-            m.selectedCategory = category
-
-            filtered = []
-            for each ch in m.loadedChannels
-                cat = lookupCategoryName(ch)
-
-                if category = "All" then
-                    filtered.Push(ch)
-                else if cat = category then
-                    filtered.Push(ch)
-                end if
-            end for
-
-            m.filteredChannels = filtered
-
-            content = CreateObject("roSGNode", "ContentNode")
-            m.channelPrograms = []
-
-            for each ch in filtered
-                item = content.CreateChild("ContentNode")
-
-                num = aaLookupString(ch, "number")
-                nm = aaLookupString(ch, "name")
-                url = aaLookupString(ch, "streamUrl")
-
-                if num <> "" then
-                    item.title = num + "  " + nm
-                else
-                    item.title = nm
-                end if
-
-                item.addField("url", "string", true)
-                item.url = url
-
-                if ch.programs <> invalid then
-                    m.channelPrograms.Push(ch.programs)
-                else
-                    m.channelPrograms.Push([])
-                end if
-            end for
-
-            m.channelList.content = content
-
-            firstChannel = m.channelList.content.getChild(0)
-            if firstChannel <> invalid then
-                m.channelList.jumpToItem = 0
-                playChannel(firstChannel)
-                updateGuideDisplayByIndex(0, firstChannel)
-            else
-                clearGuideGrid()
-                m.guideLabel.text = "No channels in this category"
-                m.infoMeta.text = "No channels in this category"
-            end if
         end sub
 
         sub addListItem(parent as Object, title as String)
@@ -744,14 +666,14 @@
         end sub
 
         sub onCategoryFocus()
+            if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
+                print "DEBUG: category focus ignored because loaded channels are active"
+                return
+            end if
+
             item = m.categoryList.content.getChild(m.categoryList.itemFocused)
-            if item <> invalid then
-                print "DEBUG: category focus -> "; item.title
-                if m.loadedChannels <> invalid and m.loadedChannels.Count() > 0 then
-                    applyCategoryFilter(item.title)
-                else
-                    updateChannelsAndGuide(item.title)
-                end if
+            if item <> invalid
+                updateChannelsAndGuide(item.title)
             end if
         end sub
 
